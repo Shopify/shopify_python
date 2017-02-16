@@ -1,0 +1,4 @@
+pylint
+autopep8
+pytest
+mypy

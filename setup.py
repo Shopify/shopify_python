@@ -20,9 +20,4 @@ setuptools.setup(
       'Programming Language :: Python :: 2',
     ],
     test_suite='tests',
-    install_requires=[
-        'pylint',
-        'autopep8',
-        'pytest',
-    ]
 )
