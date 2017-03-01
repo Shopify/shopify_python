@@ -1,6 +1,3 @@
 *.py[cod]
 *.egg-info
-spark
-.cache
 .DS_Store
-cloudera.yarn
