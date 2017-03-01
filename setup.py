@@ -1,11 +1,23 @@
+#!/usr/bin/env python
+# Copyright (c) 2017 "Shopify inc." All rights reserved.
+# Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
+import re
+
 try:
     from setuptools import setup
 except:
     from distutils.core import setup
 
+with open('shopify_python/__init__.py', 'r') as fd:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        fd.read(), re.MULTILINE).group(1)
+
+if not version:
+    raise RuntimeError('Cannot find version information')
+
 setup(
     name='shopify_python',
-    version='0.1',
+    version=version,
     description='Python Standards Library for Shopify',
     url='http://github.com/shopify/shopify_python',
     author='Shopify Data Acceleration',
@@ -31,7 +43,7 @@ setup(
             'autopep8',
             'pytest',
             'pytest-randomly',
-            'mypy',
+            'mypy; python_version > "3.3"',
         ]
     }
 )
