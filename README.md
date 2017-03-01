@@ -28,3 +28,8 @@ should be assumed to be broken (and probably will be).
 
 Committing to `master` requires a code review, submitted in the form of a GitHub Pull Request. To be merged, a PR must
 have an explicit approval from a core team member and no outstanding questions.
+
+
+## Contributing
+
+Please refer to our [Contribution Guidelines](CONTRIBUTING.md)
