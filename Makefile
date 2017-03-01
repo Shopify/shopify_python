@@ -1,4 +1,6 @@
 python_files := find . -path '*/.*' -prune -o -name '*.py' -print0
+python_version_full := $(wordlist 2,4,$(subst ., ,$(shell python --version 2>&1)))
+python_version_major := $(word 1,${python_version_full})
 
 all: test
 
@@ -13,7 +15,10 @@ autopep8:
 lint:
 	@echo 'Linting...'
 	@pylint --rcfile=pylintrc shopify_python tests.shopify_python
-	@mypy shopify_python tests/shopify_python --ignore-missing-imports
+	@if [ "$(python_version_major)" == "3" ]; then \
+		echo 'Checking type annotations...'; \
+		mypy --py2 shopify_python tests/shopify_python --ignore-missing-imports; \
+	fi
 
 autolint: autopep8 lint
 
