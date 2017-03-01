@@ -1,6 +1,9 @@
-import setuptools
+try:
+    from setuptools import setup
+except:
+    from distutils.core import setup
 
-setuptools.setup(
+setup(
     name='shopify_python',
     version='0.1',
     description='Python Standards Library for Shopify',
@@ -20,4 +23,14 @@ setuptools.setup(
       'Programming Language :: Python :: 2',
     ],
     test_suite='tests',
+    install_requires=[
+        'pylint==1.6.5'
+    ],
+    extras_require={
+        'dev': [
+            'autopep',
+            'pytest',
+            'mypy',
+        ]
+    }
 )
