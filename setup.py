@@ -10,7 +10,7 @@ setup(
     url='http://github.com/shopify/shopify_python',
     author='Shopify Data Acceleration',
     author_email='data-acceleration@shopify.com',
-    license='BSD',
+    license='MIT',
     packages=['shopify_python'],
     include_package_data=True,
     zip_safe=False,
