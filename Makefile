@@ -18,9 +18,12 @@ lint:
 autolint: autopep8 lint
 
 run_tests: clean
-	py.test --durations=10 --random .
+	py.test --durations=10 .
 
 test: autopep8 lint run_tests
 
+setup_dev:
+	pip install -e .[dev]
+
 setup:
-	pip install -r requirements.txt
+	pip install .

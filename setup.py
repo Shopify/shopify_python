@@ -15,12 +15,12 @@ setup(
     include_package_data=True,
     zip_safe=False,
     classifiers=[
-      'Development Status :: 2 - Pre-Alpha',
-      'Intended Audience :: Developers',
-      'License :: OSI Approved :: BSD License',
-      'Natural Language :: English',
-      'Programming Language :: Python :: 3',
-      'Programming Language :: Python :: 2',
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 2',
     ],
     test_suite='tests',
     install_requires=[
@@ -28,8 +28,9 @@ setup(
     ],
     extras_require={
         'dev': [
-            'autopep',
+            'autopep8',
             'pytest',
+            'pytest-randomly',
             'mypy',
         ]
     }
