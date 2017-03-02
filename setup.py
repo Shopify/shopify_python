@@ -4,9 +4,10 @@
 import re
 
 try:
-    from setuptools import setup
+    import setuptools as setuplib
 except:
-    from distutils.core import setup
+    import distutils.core as setuplib
+
 
 with open('shopify_python/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
@@ -15,7 +16,7 @@ with open('shopify_python/__init__.py', 'r') as fd:
 if not version:
     raise RuntimeError('Cannot find version information')
 
-setup(
+setuplib.setup(
     name='shopify_python',
     version=version,
     description='Python Standards Library for Shopify',
