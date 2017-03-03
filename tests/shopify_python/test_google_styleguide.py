@@ -14,10 +14,13 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
     def test_importing_function_fails(self):
         root = astroid.builder.parse("""
         from os.path import join
+        from io import FileIO
+        from os import environ
         """)
-        node = root.body[0]
-        message = pylint.testutils.Message('import-modules-only', node=node)
-        with self.assertAddsMessages(message):
+        messages = []
+        for node in root.body:
+            messages.append(pylint.testutils.Message('import-modules-only', node=node))
+        with self.assertAddsMessages(*messages):
             self.walk(root)
 
     def test_importing_modules_passes(self):
