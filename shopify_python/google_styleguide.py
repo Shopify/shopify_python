@@ -11,6 +11,11 @@ def register_checkers(linter):  # type: (astroid.ImportFrom) -> None
 
 
 class GoogleStyleGuideChecker(checkers.BaseChecker):
+    """
+    Pylint checker for the Google Python Style Guide.
+
+    See https://google.github.io/styleguide/pyguide.html
+    """
     __implements__ = (interfaces.IAstroidChecker,)
 
     name = 'google-styleguide-checker'
