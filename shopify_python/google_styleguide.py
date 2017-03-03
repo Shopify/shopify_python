@@ -34,16 +34,21 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
         See https://google.github.io/styleguide/pyguide.html?showone=Imports#Imports
         """
+        def can_import(module):
+            try:
+                importlib.import_module(module)
+                return True
+            except ImportError:
+                return False
+
         if not node.level and node.modname != '__future__':
             for name in node.names:
                 # Try to rearrange "from x import y" as "import x.y" and import it as a module
                 name, _ = name
-                module = '.'.join((node.modname, name))
-                try:
-                    importlib.import_module(module)
-                except ImportError as import_error:
-                    if str(import_error).startswith('No module named'):
-                        self.add_message('import-modules-only', node=node)
+                parent_module = node.modname
+                child_module = '.'.join((node.modname, name))
+                if can_import(parent_module) and not can_import(child_module):
+                    self.add_message('import-modules-only', node=node)
 
     def _import_full_path_only(self, node):  # type: (astroid.ImportFrom) -> None
         """

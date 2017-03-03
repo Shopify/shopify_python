@@ -21,9 +21,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
     def test_importing_modules_passes(self):
         root = astroid.builder.parse("""
         from __future__ import unicode_literals
-        import sys
         from xml import dom
         from xml import sax
+        from nonexistent_package import nonexistent_module
         """)
         with self.assertNoMessages():
             self.walk(root)
