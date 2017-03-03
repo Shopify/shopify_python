@@ -117,6 +117,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""
+        # Is this an assignment happening within a module? If so report on each assignment name
+        # whether its in a tuple or not
         if isinstance(node.parent, astroid.Module):
             for target in node.targets:
                 if hasattr(target, 'elts'):
