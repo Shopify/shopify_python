@@ -1,6 +1,6 @@
 import sys
 
-import astroid.test_utils
+import astroid
 import pylint.testutils
 import pytest
 
@@ -112,4 +112,27 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
             pass
         """)
         with self.assertAddsMessages():
+            self.walk(root)
+
+    def test_try_exc_fnly_complexity(self):
+        root = astroid.builder.parse("""
+        try:
+            a = [x for x in range(0, 10) if x < 5]
+            a = sum((x * 2 for x in a))
+        except AssertionError as assert_error:
+            if set(assert_error).startswith('Division by zero'):
+                raise MyException(assert_error, [x for x in range(0, 10) if x < 5])
+            else:
+                a = [x for x in range(0, 10) if x < 5]
+                raise
+        finally:
+            a = [x for x in range(0, 10) if x < 5]
+            a = sum((x * 2 for x in a))
+        """)
+        with self.assertAddsMessages(
+            pylint.testutils.Message('finally-too-long', node=root.body[0], args={'found': 24}),
+            pylint.testutils.Message('try-too-long', node=root.body[0].body[0], args={'found': 24}),
+            pylint.testutils.Message('except-too-long', node=root.body[0].body[0].handlers[0],
+                                     args={'found': 39}),
+        ):
             self.walk(root)
