@@ -8,7 +8,7 @@ from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
 
 
-if sys.version_info >= (3, 0):
+if sys.version_info >= (3, 4):
     import importlib.util  # pylint: disable=no-name-in-module,import-error
 else:
     import importlib
@@ -90,7 +90,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             return  # Skip if disable to avoid side-effects from importing modules
 
         def can_import(module_name):
-            if sys.version_info >= (3, 0):
+            if sys.version_info >= (3, 4):
                 try:
                     return bool(importlib.util.find_spec(module_name))
                 except AttributeError:
