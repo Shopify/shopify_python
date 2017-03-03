@@ -50,7 +50,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "Use either raise Exception('message') or raise Exception"),
         'C2606': ('Caught StandardError',
                   'catch-standard-error',
-                  "Don't catch broad exceptions"),
+                  "Don't catch StandardError"),
         'C2607': ('Try body too long',
                   'try-too-long',
                   "The larger the try body, the more likely that an unexpected exception will be raised"),
