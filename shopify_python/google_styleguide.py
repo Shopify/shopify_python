@@ -6,7 +6,7 @@ import six
 from pylint import checkers, interfaces
 
 
-def register_checkers(linter):  # type: (astroid.ImportFrom) -> None
+def register_checkers(linter):  # type: (lint.PyLinter) -> None
     """Register checkers."""
     linter.register_checker(GoogleStyleGuideChecker(linter))
 
@@ -16,6 +16,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     Pylint checker for the Google Python Style Guide.
 
     See https://google.github.io/styleguide/pyguide.html
+
+    Checks that can't be implemented include:
+      - When capturing an exception, use as rather than a comma
     """
     __implements__ = (interfaces.IAstroidChecker,)
 
@@ -40,13 +43,30 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C9906': ('Caught StandardError',
                   'catch-standard-error',
                   "Don't catch broad exceptions"),
+        'C9907': ('Try body too long',
+                  'try-too-long',
+                  "The larger the try body, the more likely that an unexpected exception will be raised"),
+        'C9908': ('Except body too long',
+                  'except-too-long',
+                  "The larger the except body, the more likely that an exception will be raised"),
+        'C9909': ('Finally body too long',
+                  'finally-too-long',
+                  "The larger the except body, the more likely that an exception will be raised"),
     }
+
+    max_try_exc_finally_body_size = 5
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
     def visit_excepthandler(self, node):  # type: (astroid.ExceptHandler) -> None
         self.__dont_catch_standard_error(node)
+
+    def visit_tryexcept(self, node):  # type: (astroid.TryExcept) -> None
+        self.__minimize_code_in_try_except(node)
+
+    def visit_tryfinally(self, node):  # type: (astroid.TryFinally) -> None
+        self.__minimize_code_in_finally(node)
 
     def visit_importfrom(self, node):  # type: (astroid.ImportFrom) -> None
         self.__import_modules_only(node)
@@ -57,6 +77,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __import_modules_only(self, node):  # type: (astroid.ImportFrom) -> None
         """Use imports for packages and modules only."""
+        if hasattr(self.linter, 'config') and 'import-modules-only' in self.linter.config.disable:
+            return  # Skip if disable to avoid side-effects from importing modules
+
         def can_import(module):
             try:
                 importlib.import_module(module)
@@ -80,7 +103,14 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""
         if isinstance(node.parent, astroid.Module):
-            self.add_message('global-variable', node=node)
+            for target in node.targets:
+                if hasattr(target, 'elts'):
+                    for elt in target.elts:
+                        if elt.name != '__version__':
+                            self.add_message('global-variable', node=elt)
+                elif hasattr(target, 'name'):
+                    if target.name != '__version__':
+                        self.add_message('global-variable', node=target)
 
     def __dont_use_archaic_raise_syntax(self, node):  # type: (astroid.Raise) -> None
         """Don't use the two-argument form of raise or the string raise"""
@@ -99,34 +129,15 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         if node.type.name == 'StandardError':
             self.add_message('catch-standard-error', node=node)
 
-        # TODO Exceptions are allowed but must be used carefully.
-        #   - Never use catch-all except: statements, or catch Exception or StandardError,
-        #     - Covered by bare-except, broad-except, but not StandardError
-        #   - When capturing an exception, use as rather than a comma. For example:
-        #   - Minimize the amount of code in a try/except block.
+    def __minimize_code_in_try_except(self, node):  # type: (astroid.TryExcept) -> None
+        """Minimize the amount of code in a try/except block."""
+        if len(node.body) > self.max_try_exc_finally_body_size:
+            self.add_message('try-too-long', node=node)
+        for handler in node.handlers:
+            if len(handler.body) > self.max_try_exc_finally_body_size:
+                self.add_message('except-too-long', node=handler)
 
-    # TODO List comprehensions are okay to use for simple cases.
-    # def visit_comprehension, check parent, it it contains multiple generators then that's bad
-
-    # TODO Use default iterators and operators for types that support them, like lists, dictionaries, and files.
-
-    # TODO Lambdas are okay for one-liners.
-    # TODO Conditional expressions are okay for one-liners.
-
-    # TODO Do not use mutable objects as default values in the function or
-    # method definition. (is this covered by pylint already?)
-
-    # TODO Use properties for accessing or setting data where you would
-    # normally have used simple, lightweight accessor or setter methods.
-
-    # TODO Use the "implicit" false if at all possible.
-
-    # TODO Use string methods instead of the string module where possible. (Covered by pylint)
-
-    # TODO Avoid fancy features like metaclasses, access to bytecode,
-    # on-the-fly compilation, dynamic inheritance, object reparenting, import
-    # hacks, reflection, modification of system internals, etc.
-
-    # TODO Shebang lines shoul dbe of the form  #!/usr/bin/env python with an optional single digit 2 or 3 suffix
-
-    # TODO If a class inherits from no other base classes, explicitly inherit from object.  (already covered by pylint?)
+    def __minimize_code_in_finally(self, node):  # type: (astroid.TryFinally) -> None
+        """Minimize the amount of code in a finally block."""
+        if len(node.finalbody) > self.max_try_exc_finally_body_size:
+            self.add_message('finally-too-long', node=node)
