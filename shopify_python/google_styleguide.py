@@ -1,9 +1,17 @@
-import importlib
+import sys
 
 import astroid  # pylint: disable=unused-import
 import six
 
-from pylint import checkers, interfaces
+from pylint import checkers
+from pylint import interfaces
+from pylint import lint  # pylint: disable=unused-import
+
+
+if sys.version_info >= (3, 0):
+    import importlib.util  # pylint: disable=no-name-in-module,import-error
+else:
+    import importlib
 
 
 def register_checkers(linter):  # type: (lint.PyLinter) -> None
@@ -77,15 +85,22 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __import_modules_only(self, node):  # type: (astroid.ImportFrom) -> None
         """Use imports for packages and modules only."""
+
         if hasattr(self.linter, 'config') and 'import-modules-only' in self.linter.config.disable:
             return  # Skip if disable to avoid side-effects from importing modules
 
-        def can_import(module):
-            try:
-                importlib.import_module(module)
-                return True
-            except ImportError:
-                return False
+        def can_import(module_name):
+            if sys.version_info >= (3, 0):
+                try:
+                    return bool(importlib.util.find_spec(module_name))
+                except AttributeError:
+                    return False
+            else:
+                try:
+                    importlib.import_module(module_name)
+                    return True
+                except ImportError:
+                    return False
 
         if not node.level and node.modname != '__future__':
             for name in node.names:
