@@ -15,7 +15,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         root = astroid.builder.parse("""
         from os.path import join
         """)
-        node = root.__dict__['body'][0]
+        node = root.body[0]
         message = pylint.testutils.Message('import-modules-only', node=node)
         with self.assertAddsMessages(message):
             self.walk(root)
@@ -36,7 +36,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         from .. import string
         """)
         messages = []
-        for node in root.__dict__['body']:
+        for node in root.body:
             messages.append(pylint.testutils.Message('import-full-path', node=node))
         with self.assertAddsMessages(*messages):
             self.walk(root)
@@ -60,7 +60,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         raise MyException, 'Error message'
         raise 'Error message'
         """)
-        node = root.__dict__['body'][0]
+        node = root.body[0]
         message = pylint.testutils.Message('two-arg-exception', node=node)
         with self.assertAddsMessages(message):
             self.walk(root)
@@ -72,7 +72,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         except StandardError:
             pass
         """)
-        node = root.__dict__['body'][0].__dict__['handlers'][0]
+        node = root.body[0].handlers[0]
         message = pylint.testutils.Message('catch-standard-error', node=node)
         with self.assertAddsMessages(message):
             self.walk(root)
