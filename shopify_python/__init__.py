@@ -2,4 +2,12 @@
 # Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 from __future__ import unicode_literals
 
-__version__ = '0.0.0'
+from pylint import lint
+from shopify_python import google_styleguide
+
+
+__version__ = '0.1.0'
+
+
+def register(linter):  # type: (lint.PyLinter) -> None
+    google_styleguide.register_checkers(linter)

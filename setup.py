@@ -37,7 +37,8 @@ setuplib.setup(
     ],
     test_suite='tests',
     install_requires=[
-        'pylint==1.6.5'
+        'pylint==1.6.5',
+        'six>=1.10.0',
     ],
     extras_require={
         'dev': [

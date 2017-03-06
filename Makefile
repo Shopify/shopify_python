@@ -27,7 +27,7 @@ autolint: autopep8 lint
 run_tests: clean
 	py.test --durations=10 .
 
-test: autopep8 lint run_tests
+test: autopep8 run_tests lint
 
 setup_dev:
 	pip install -e .[dev]
