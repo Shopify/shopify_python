@@ -68,6 +68,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertAddsMessages(message):
             self.walk(root)
 
+    @pytest.mark.skipif(sys.version_info < (3, 0), reason="Tests code that is Python 2 incompatible")
     def test_using_reraise_passes(self):
         root = astroid.builder.parse("""
         try:
