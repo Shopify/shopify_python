@@ -68,6 +68,17 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertAddsMessages(message):
             self.walk(root)
 
+    @pytest.mark.skipif(sys.version_info < (3, 0), reason="Tests code that is Python 2 incompatible")
+    def test_using_reraise_passes(self):
+        root = astroid.builder.parse("""
+        try:
+            x = 1
+        except Exception as exc:
+            raise MyException from exc
+        """)
+        with self.assertNoMessages():
+            self.walk(root)
+
     def test_catch_standard_error_fails(self):
         root = astroid.builder.parse("""
         try:

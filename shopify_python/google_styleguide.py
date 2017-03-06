@@ -117,7 +117,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __dont_use_archaic_raise_syntax(self, node):  # type: (astroid.Raise) -> None
         """Don't use the two-argument form of raise or the string raise"""
         children = list(node.get_children())
-        if len(children) > 1:
+        if len(children) > 1 and not isinstance(children[1], astroid.Name):
             self.add_message('two-arg-exception', node=node)
         elif len(children) == 1 and isinstance(children[0], six.string_types):
             self.add_message('string-exception', node=node)
