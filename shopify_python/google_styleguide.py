@@ -77,13 +77,15 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                 try:
                     return bool(importlib.util.find_spec(module_name))
                 except AttributeError:
-                    return False
+                    return False  # Occurs when a module doesn't exist
+                except ImportError:
+                    return False  # Occurs when a module encounters an error during import
             else:
                 try:
                     importlib.import_module(module_name)
                     return True
                 except ImportError:
-                    return False
+                    return False  # Occurs when a module doesn't exist or on error during import
 
         if not node.level and node.modname != '__future__':
             for name in node.names:
