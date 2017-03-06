@@ -143,7 +143,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
         Pylint already handles bare-except and broad-except (for Exception).
         """
-        if node.type.name == 'StandardError':
+        if hasattr(node.type, 'name') and node.type.name == 'StandardError':
             self.add_message('catch-standard-error', node=node)
 
     def __minimize_code_in_try_except(self, node):  # type: (astroid.TryExcept) -> None

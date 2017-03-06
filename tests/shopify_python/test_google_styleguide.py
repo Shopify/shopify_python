@@ -80,6 +80,16 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertAddsMessages(message):
             self.walk(root)
 
+    def test_catch_blank_passes(self):
+        root = astroid.builder.parse("""
+        try:
+            pass
+        except:
+            pass
+        """)
+        with self.assertAddsMessages():
+            self.walk(root)
+
     def test_try_exc_finally_size(self):
         root = astroid.builder.parse("""
         try:
