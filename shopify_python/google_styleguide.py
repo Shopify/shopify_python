@@ -51,30 +51,13 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C2606': ('Caught StandardError',
                   'catch-standard-error',
                   "Don't catch StandardError"),
-        'C2607': ('Try body too long',
-                  'try-too-long',
-                  "The larger the try body, the more likely that an unexpected exception will be raised"),
-        'C2608': ('Except body too long',
-                  'except-too-long',
-                  "The larger the except body, the more likely that an exception will be raised"),
-        'C2609': ('Finally body too long',
-                  'finally-too-long',
-                  "The larger the except body, the more likely that an exception will be raised"),
     }
-
-    max_try_exc_finally_body_size = 5
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
     def visit_excepthandler(self, node):  # type: (astroid.ExceptHandler) -> None
         self.__dont_catch_standard_error(node)
-
-    def visit_tryexcept(self, node):  # type: (astroid.TryExcept) -> None
-        self.__minimize_code_in_try_except(node)
-
-    def visit_tryfinally(self, node):  # type: (astroid.TryFinally) -> None
-        self.__minimize_code_in_finally(node)
 
     def visit_importfrom(self, node):  # type: (astroid.ImportFrom) -> None
         self.__import_modules_only(node)
@@ -145,16 +128,3 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """
         if hasattr(node.type, 'name') and node.type.name == 'StandardError':
             self.add_message('catch-standard-error', node=node)
-
-    def __minimize_code_in_try_except(self, node):  # type: (astroid.TryExcept) -> None
-        """Minimize the amount of code in a try/except block."""
-        if len(node.body) > self.max_try_exc_finally_body_size:
-            self.add_message('try-too-long', node=node)
-        for handler in node.handlers:
-            if len(handler.body) > self.max_try_exc_finally_body_size:
-                self.add_message('except-too-long', node=handler)
-
-    def __minimize_code_in_finally(self, node):  # type: (astroid.TryFinally) -> None
-        """Minimize the amount of code in a finally block."""
-        if len(node.finalbody) > self.max_try_exc_finally_body_size:
-            self.add_message('finally-too-long', node=node)
