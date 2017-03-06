@@ -6,7 +6,7 @@ from pylint import lint
 from shopify_python import google_styleguide
 
 
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 
 
 def register(linter):  # type: (lint.PyLinter) -> None
