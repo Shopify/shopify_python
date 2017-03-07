@@ -47,6 +47,13 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "Don't catch StandardError"),
     }
 
+    options = (
+         ('ignore-module-import-only', {
+             'default': ('__future__',),
+             'type': 'csv',
+             'help': 'List of top-level module names separated by comma.'}),
+    )
+    
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
@@ -68,8 +75,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __import_modules_only(self, node):  # type: (astroid.ImportFrom) -> None
         """Use imports for packages and modules only."""
-        if not node.level and node.modname != '__future__':
-
+        matches_ignored_module = any(
+            (node.modname.startswith(module_name) for module_name in self.config.ignore_module_import_only))
+        if not node.level and not matches_ignored_module:
             # Walk up the parents until we hit one that can import a module (e.g. a module)
             parent = node.parent
             while not hasattr(parent, 'import_module'):
