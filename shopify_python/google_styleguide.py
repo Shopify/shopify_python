@@ -1,4 +1,4 @@
-import sys
+import typing  # pylint: disable=unused-import
 
 import astroid  # pylint: disable=unused-import
 import six
@@ -6,12 +6,6 @@ import six
 from pylint import checkers
 from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
-
-
-if sys.version_info >= (3, 4):
-    import importlib.util  # pylint: disable=no-name-in-module,import-error
-else:
-    import importlib
 
 
 def register_checkers(linter):  # type: (lint.PyLinter) -> None
@@ -33,12 +27,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     name = 'google-styleguide-checker'
 
     msgs = {
-        'C2601': ('Imported an object that is not a package or module',
+        'C2601': ('%(child)s is not a module or cannot be imported',
                   'import-modules-only',
-                  'Use imports for packages and modules only'),
-        'C2602': ('Imported using a partial path',
+                  'Install %(child)s or only import packages or modules from it'),
+        'C2602': ('%(module)s imported relatively',
                   'import-full-path',
-                  'Import each module using the full pathname location of the module.'),
+                  'Import %(module)s using the absolute name.'),
         'C2603': ('Variable declared at the module level (i.e. global)',
                   'global-variable',
                   'Avoid global variables in favor of class variables'),
@@ -53,6 +47,13 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "Don't catch StandardError"),
     }
 
+    options = (
+        ('ignore-module-import-only', {
+            'default': ('__future__',),
+            'type': 'csv',
+            'help': 'List of top-level module names separated by comma.'}),
+    )
+
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
@@ -66,39 +67,37 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def visit_raise(self, node):  # type: (astroid.Raise) -> None
         self.__dont_use_archaic_raise_syntax(node)
 
+    @staticmethod
+    def __get_module_names(node):  # type: (astroid.ImportFrom) -> typing.Generator[str, None, None]
+        for name in node.names:
+            name, _ = name
+            yield '.'.join((node.modname, name))  # Rearrange "from x import y" as "import x.y"
+
     def __import_modules_only(self, node):  # type: (astroid.ImportFrom) -> None
         """Use imports for packages and modules only."""
+        matches_ignored_module = any((node.modname.startswith(module_name) for module_name in
+                                      self.config.ignore_module_import_only))  # pylint: disable=no-member
+        if not node.level and not matches_ignored_module:
+            # Walk up the parents until we hit one that can import a module (e.g. a module)
+            parent = node.parent
+            while not hasattr(parent, 'import_module'):
+                parent = parent.parent
 
-        if hasattr(self.linter, 'config') and 'import-modules-only' in self.linter.config.disable:
-            return  # Skip if disable to avoid side-effects from importing modules
-
-        def can_import(module_name):
-            if sys.version_info >= (3, 4):
+            # Warn on each imported name (yi) in "from x import y1, y2, y3"
+            for child_module in self.__get_module_names(node):
                 try:
-                    return bool(importlib.util.find_spec(module_name))
-                except AttributeError:
-                    return False  # Occurs when a module doesn't exist
-                except ImportError:
-                    return False  # Occurs when a module encounters an error during import
-            else:
-                try:
-                    importlib.import_module(module_name)
-                    return True
-                except ImportError:
-                    return False  # Occurs when a module doesn't exist or on error during import
-
-        if not node.level and node.modname != '__future__':
-            for name in node.names:
-                name, _ = name
-                parent_module = node.modname
-                child_module = '.'.join((node.modname, name))  # Rearrange "from x import y" as "import x.y"
-                if can_import(parent_module) and not can_import(child_module):
-                    self.add_message('import-modules-only', node=node)
+                    parent.import_module(child_module)
+                except astroid.exceptions.AstroidBuildingException as building_exception:
+                    if str(building_exception).startswith('Unable to load module'):
+                        self.add_message('import-modules-only', node=node, args={'child': child_module})
+                    else:
+                        raise
 
     def __import_full_path_only(self, node):  # type: (astroid.ImportFrom) -> None
         """Import each module using the full pathname location of the module."""
         if node.level:
-            self.add_message('import-full-path', node=node)
+            for child_module in self.__get_module_names(node):
+                self.add_message('import-full-path', node=node, args={'module': child_module})
 
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""
