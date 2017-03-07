@@ -39,6 +39,7 @@ setuplib.setup(
     install_requires=[
         'pylint==1.6.5',
         'six>=1.10.0',
+        'typing>=3.5.3.0',
     ],
     extras_require={
         'dev': [
