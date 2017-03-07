@@ -16,11 +16,22 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         from os.path import join
         from io import FileIO
         from os import environ
+        from nonexistent_package import nonexistent_module
+        def fnc():
+            from other_nonexistent_package import nonexistent_module
         """)
-        messages = []
-        for node in root.body:
-            messages.append(pylint.testutils.Message('import-modules-only', node=node))
-        with self.assertAddsMessages(*messages):
+        import_nodes = list(root.nodes_of_class(astroid.ImportFrom))
+        tried_to_import = [
+            'os.path.join',
+            'io.FileIO',
+            'os.environ',
+            'nonexistent_package.nonexistent_module',
+            'other_nonexistent_package.nonexistent_module',
+        ]
+        with self.assertAddsMessages(*[
+            pylint.testutils.Message('import-modules-only', node=node, args={'child': child})
+            for node, child in zip(import_nodes, tried_to_import)
+        ]):
             self.walk(root)
 
     def test_importing_modules_passes(self):
@@ -28,7 +39,8 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         from __future__ import unicode_literals
         from xml import dom
         from xml import sax
-        from nonexistent_package import nonexistent_module
+        def fnc():
+            from xml import dom
         """)
         with self.assertNoMessages():
             self.walk(root)
@@ -36,12 +48,13 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
     def test_importing_relatively_fails(self):
         root = astroid.builder.parse("""
         from . import string
-        from .. import string
+        from .. import string, os
         """)
-        messages = []
-        for node in root.body:
-            messages.append(pylint.testutils.Message('import-full-path', node=node))
-        with self.assertAddsMessages(*messages):
+        with self.assertAddsMessages(
+            pylint.testutils.Message('import-full-path', node=root.body[0], args={'module': '.string'}),
+            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.string'}),
+            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.os'}),
+        ):
             self.walk(root)
 
     def test_global_variables_fail(self):
