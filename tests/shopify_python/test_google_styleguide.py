@@ -36,7 +36,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
     def test_importing_modules_passes(self):
         root = astroid.builder.parse("""
-        from __future__ import unicode_literals
+        from __future__ import unicode_literals  # Test default option to ignore __future__
         from xml import dom
         from xml import sax
         def fnc():
