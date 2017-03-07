@@ -21,6 +21,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     Checks that can't be implemented include:
       - When capturing an exception, use as rather than a comma
+
+    Checks that are already covered by Pylint include:
+      - Never use catch-all 'except:' statements, or 'catch Exception' (bare-except, broad-except)
+      - Do not use mutable objects as default values in the function or method definition (dangerous-default-value)
     """
     __implements__ = (interfaces.IAstroidChecker,)
 
