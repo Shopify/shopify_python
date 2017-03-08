@@ -66,15 +66,15 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             'type': 'csv',
             'help': 'List of top-level module names separated by comma.'}),
         ('max-try-nodes', {
-            'default': 20,
+            'default': 25,
             'type': 'int',
             'help': 'Number of AST nodes permitted in a try-block'}),
         ('max-except-nodes', {
-            'default': 30,
+            'default': 23,
             'type': 'int',
             'help': 'Number of AST nodes permitted in an except-block'}),
         ('max-finally-nodes', {
-            'default': 10,
+            'default': 13,
             'type': 'int',
             'help': 'Number of AST nodes permitted in a finally-block'}),
     )
@@ -116,11 +116,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
             # Warn on each imported name (yi) in "from x import y1, y2, y3"
             for child_module in self.__get_module_names(node):
+                args = {'child': child_module}
                 try:
                     parent.import_module(child_module)
                 except astroid.exceptions.AstroidBuildingException as building_exception:
                     if str(building_exception).startswith('Unable to load module'):
-                        self.add_message('import-modules-only', node=node, args={'child': child_module})
+                        self.add_message('import-modules-only', node=node, args=args)
                     else:
                         raise
 

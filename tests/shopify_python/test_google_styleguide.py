@@ -118,7 +118,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         root = astroid.builder.parse("""
         try:
             a = [x for x in range(0, 10) if x < 5]
-            a = sum((x * 2 for x in a))
+            a = sum((x * 2 for x in a)) + (a ** 2)
         except AssertionError as assert_error:
             if set(assert_error).startswith('Division by zero'):
                 raise MyException(assert_error, [x for x in range(0, 10) if x < 5])
@@ -131,7 +131,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
         with self.assertAddsMessages(
             pylint.testutils.Message('finally-too-long', node=root.body[0], args={'found': 24}),
-            pylint.testutils.Message('try-too-long', node=root.body[0].body[0], args={'found': 24}),
+            pylint.testutils.Message('try-too-long', node=root.body[0].body[0], args={'found': 28}),
             pylint.testutils.Message('except-too-long', node=root.body[0].body[0].handlers[0],
                                      args={'found': 39}),
         ):
