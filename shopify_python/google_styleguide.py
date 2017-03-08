@@ -1,3 +1,4 @@
+import re
 import typing  # pylint: disable=unused-import
 
 import astroid  # pylint: disable=unused-import
@@ -6,6 +7,7 @@ import six
 from pylint import checkers
 from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
+from pylint import utils
 
 
 def register_checkers(linter):  # type: (lint.PyLinter) -> None
@@ -37,7 +39,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C2602': ('%(module)s imported relatively',
                   'import-full-path',
                   'Import %(module)s using the absolute name.'),
-        'C2603': ('Variable declared at the module level (i.e. global)',
+        'C2603': ('%(name)s declared at the module level (i.e. global)',
                   'global-variable',
                   'Avoid global variables in favor of class variables'),
         'C2604': ('Raised two-argument exception',
@@ -105,17 +107,27 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""
+
+        def check_assignment(node):
+            if utils.get_global_option(self, 'class-rgx').match(node.name):
+                return  # Type definitions are allowed if they assign to a class name
+
+            if utils.get_global_option(self, 'const-rgx').match(node.name) or \
+               re.match('^__[a-z]+__$', node.name):
+                if isinstance(node.parent.value, astroid.Const):
+                    return  # Constants are allowed
+
+            self.add_message('global-variable', node=node, args={'name': node.name})
+
         # Is this an assignment happening within a module? If so report on each assignment name
         # whether its in a tuple or not
         if isinstance(node.parent, astroid.Module):
             for target in node.targets:
                 if hasattr(target, 'elts'):
                     for elt in target.elts:
-                        if elt.name != '__version__':
-                            self.add_message('global-variable', node=elt)
+                        check_assignment(elt)
                 elif hasattr(target, 'name'):
-                    if target.name != '__version__':
-                        self.add_message('global-variable', node=target)
+                    check_assignment(target)
 
     def __dont_use_archaic_raise_syntax(self, node):  # type: (astroid.Raise) -> None
         """Don't use the two-argument form of raise or the string raise"""

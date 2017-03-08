@@ -57,16 +57,26 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         ):
             self.walk(root)
 
-    def test_global_variables_fail(self):
+    def test_global_variables(self):
         root = astroid.builder.parse("""
         module_var, other_module_var = 10
+        another_module_var = 1
         __version__ = '0.0.0'
+        CONSTANT = 10
+        NOT_A_CONSTANT = sum(x)
+        Point = namedtuple('Point', ['x', 'y'])
         class MyClass(object):
             class_var = 10
         """)
         with self.assertAddsMessages(
-            pylint.testutils.Message('global-variable', node=root.body[0].targets[0].elts[0]),
-            pylint.testutils.Message('global-variable', node=root.body[0].targets[0].elts[1]),
+            pylint.testutils.Message(
+                'global-variable', node=root.body[0].targets[0].elts[0], args={'name': 'module_var'}),
+            pylint.testutils.Message(
+                'global-variable', node=root.body[0].targets[0].elts[1], args={'name': 'other_module_var'}),
+            pylint.testutils.Message(
+                'global-variable', node=root.body[1].targets[0], args={'name': 'another_module_var'}),
+            pylint.testutils.Message(
+                'global-variable', node=root.body[4].targets[0], args={'name': 'NOT_A_CONSTANT'}),
         ):
             self.walk(root)
 
