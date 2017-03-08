@@ -110,7 +110,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
         def check_assignment(node):
             if utils.get_global_option(self, 'class-rgx').match(node.name):
-                return  # Type definitions are allowed if the assign to a class name
+                return  # Type definitions are allowed if they assign to a class name
 
             if utils.get_global_option(self, 'const-rgx').match(node.name) or \
                re.match('^__[a-z]+__$', node.name):
