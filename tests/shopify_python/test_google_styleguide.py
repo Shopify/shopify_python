@@ -63,8 +63,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         another_module_var = 1
         __version__ = '0.0.0'
         CONSTANT = 10
-        OTHER_CONSTANT = sum(x)
+        _OTHER_CONSTANT = sum(x)
         Point = namedtuple('Point', ['x', 'y'])
+        _Point = namedtuple('_Point', ['x', 'y'])
         class MyClass(object):
             class_var = 10
         """)
