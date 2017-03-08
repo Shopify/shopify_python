@@ -129,10 +129,11 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
             a = [x for x in range(0, 10) if x < 5]
             a = sum((x * 2 for x in a))
         """)
+        try_finally = root.body[0]
+        try_except = try_finally.body[0]
         with self.assertAddsMessages(
-            pylint.testutils.Message('finally-too-long', node=root.body[0], args={'found': 24}),
-            pylint.testutils.Message('try-too-long', node=root.body[0].body[0], args={'found': 28}),
-            pylint.testutils.Message('except-too-long', node=root.body[0].body[0].handlers[0],
-                                     args={'found': 39}),
+            pylint.testutils.Message('finally-too-long', node=try_finally, args={'found': 24}),
+            pylint.testutils.Message('try-too-long', node=try_except, args={'found': 28}),
+            pylint.testutils.Message('except-too-long', node=try_except.handlers[0], args={'found': 39}),
         ):
             self.walk(root)
