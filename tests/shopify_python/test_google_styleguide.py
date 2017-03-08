@@ -63,7 +63,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         another_module_var = 1
         __version__ = '0.0.0'
         CONSTANT = 10
-        NOT_A_CONSTANT = sum(x)
+        OTHER_CONSTANT = sum(x)
         Point = namedtuple('Point', ['x', 'y'])
         class MyClass(object):
             class_var = 10
@@ -75,8 +75,6 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
                 'global-variable', node=root.body[0].targets[0].elts[1], args={'name': 'other_module_var'}),
             pylint.testutils.Message(
                 'global-variable', node=root.body[1].targets[0], args={'name': 'another_module_var'}),
-            pylint.testutils.Message(
-                'global-variable', node=root.body[4].targets[0], args={'name': 'NOT_A_CONSTANT'}),
         ):
             self.walk(root)
 
