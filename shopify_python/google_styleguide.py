@@ -39,7 +39,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C2602': ('%(module)s imported relatively',
                   'import-full-path',
                   'Import %(module)s using the absolute name.'),
-        'C2603': ('Variable declared at the module level (i.e. global)',
+        'C2603': ('%(name)s declared at the module level (i.e. global)',
                   'global-variable',
                   'Avoid global variables in favor of class variables'),
         'C2604': ('Raised two-argument exception',
