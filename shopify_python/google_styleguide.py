@@ -114,8 +114,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
             if utils.get_global_option(self, 'const-rgx').match(node.name) or \
                re.match('^__[a-z]+__$', node.name):
-                if isinstance(node.parent.value, astroid.Const):
-                    return  # Constants are allowed
+                return  # Constants are allowed
 
             self.add_message('global-variable', node=node, args={'name': node.name})
 
