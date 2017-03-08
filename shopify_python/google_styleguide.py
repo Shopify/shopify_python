@@ -2,6 +2,7 @@ import re
 import typing  # pylint: disable=unused-import
 
 import astroid  # pylint: disable=unused-import
+import shopify_python.ast
 import six
 
 from pylint import checkers
@@ -51,6 +52,18 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C2606': ('Caught StandardError',
                   'catch-standard-error',
                   "Don't catch StandardError"),
+        'C2607': ('Try body has %(found)i nodes',
+                  'try-too-long',
+                  "%(found)i nodes is a larger than recommended 'try' body size making it more "
+                  "likely that an unexpected exception will be raised"),
+        'C2608': ('Except body has %(found)i nodes',
+                  'except-too-long',
+                  "%(found)i nodes is a larger than recommended 'except' body size making it more "
+                  "likely that an exception will be raised during exception handling"),
+        'C2609': ('Finally body has %(found)i nodes',
+                  'finally-too-long',
+                  "%(found)i nodes is a larger than recommended 'finally' body size making it more "
+                  "likely that an exception will be raised during resource cleanup activities"),
     }
 
     options = (
@@ -58,6 +71,18 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             'default': ('__future__',),
             'type': 'csv',
             'help': 'List of top-level module names separated by comma.'}),
+        ('max-try-nodes', {
+            'default': 25,
+            'type': 'int',
+            'help': 'Number of AST nodes permitted in a try-block'}),
+        ('max-except-nodes', {
+            'default': 23,
+            'type': 'int',
+            'help': 'Number of AST nodes permitted in an except-block'}),
+        ('max-finally-nodes', {
+            'default': 13,
+            'type': 'int',
+            'help': 'Number of AST nodes permitted in a finally-block'}),
     )
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
@@ -65,6 +90,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_excepthandler(self, node):  # type: (astroid.ExceptHandler) -> None
         self.__dont_catch_standard_error(node)
+
+    def visit_tryexcept(self, node):  # type: (astroid.TryExcept) -> None
+        self.__minimize_code_in_try_except(node)
+
+    def visit_tryfinally(self, node):  # type: (astroid.TryFinally) -> None
+        self.__minimize_code_in_finally(node)
 
     def visit_importfrom(self, node):  # type: (astroid.ImportFrom) -> None
         self.__import_modules_only(node)
@@ -91,11 +122,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
             # Warn on each imported name (yi) in "from x import y1, y2, y3"
             for child_module in self.__get_module_names(node):
+                args = {'child': child_module}
                 try:
                     parent.import_module(child_module)
                 except astroid.exceptions.AstroidBuildingException as building_exception:
                     if str(building_exception).startswith('Unable to load module'):
-                        self.add_message('import-modules-only', node=node, args={'child': child_module})
+                        self.add_message('import-modules-only', node=node, args=args)
                     else:
                         raise
 
@@ -144,3 +176,19 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """
         if hasattr(node.type, 'name') and node.type.name == 'StandardError':
             self.add_message('catch-standard-error', node=node)
+
+    def __minimize_code_in_try_except(self, node):  # type: (astroid.TryExcept) -> None
+        """Minimize the amount of code in a try/except block."""
+        try_body_nodes = sum((shopify_python.ast.count_tree_size(child) for child in node.body))
+        if try_body_nodes > self.config.max_try_nodes:  # pylint: disable=no-member
+            self.add_message('try-too-long', node=node, args={'found': try_body_nodes})
+        for handler in node.handlers:
+            except_nodes = shopify_python.ast.count_tree_size(handler)
+            if except_nodes > self.config.max_except_nodes:  # pylint: disable=no-member
+                self.add_message('except-too-long', node=handler, args={'found': except_nodes})
+
+    def __minimize_code_in_finally(self, node):  # type: (astroid.TryFinally) -> None
+        """Minimize the amount of code in a finally block."""
+        finally_body_nodes = sum((shopify_python.ast.count_tree_size(child) for child in node.finalbody))
+        if finally_body_nodes > self.config.max_finally_nodes:  # pylint: disable=no-member
+            self.add_message('finally-too-long', node=node, args={'found': finally_body_nodes})
