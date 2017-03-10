@@ -42,6 +42,21 @@ Committing to `master` requires a code review, submitted in the form of a GitHub
 have an explicit approval from a core team member and no outstanding questions.
 
 
+## Project Setup
+
+To help you apply these principles this repository contains a pylint plugin and some example files to bootstrap a Python project. When beginning a Python project:
+
+- Start with a [`pylintrc`](pylintrc) file of this form and disable messages in Python source files if needed as agreed upon by team members
+  - During early development of a project, globally disabling the `fixme` and `missing-docstring` messages via `pylintrc` is acceptable but these should be removed before a 1.0.0 release of a library or a production deployment of an application
+  - Install and use the `shopify_python` checker (which this [`pylintrc`](pylintrc) is configured to run) by making a `requirements.txt` entry of `git+https://github.com/Shopify/shopify_python.git@v0.1.2` (replacing `v0.1.2` with the latest version number) and installing it via pip (e.g. `pip install -r requirements.txt`)
+- Use a continuous integration (CI) server such as [Travis CI](https://travis-ci.org/) (or an internal alternative) and for each PR require successful runs of:
+  - [`py.test`](http://doc.pytest.org/en/latest/) to run your unit tests
+    - Use the [`pytest-randomly`](https://pypi.python.org/pypi/pytest-randomly) plugin to randomize test order to eliminate test-order dependencies
+  - [`pylint`](https://pylint.readthedocs.io/) to lint your code using pylint's default checkers and the `shopify_python` checker defined in this project
+  - [`mypy`](http://mypy.readthedocs.io/) to check type annotations
+- Use a [`Makefile`](Makefile) similar to the one used by this project to run tests/linters in a similar way on both CI and for local development (or use an internal alternative)
+
+
 ## Contributing
 
 Please refer to our [Contribution Guidelines](CONTRIBUTING.md)
