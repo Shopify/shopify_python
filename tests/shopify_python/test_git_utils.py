@@ -4,6 +4,7 @@ import pytest
 from git import repo
 from shopify_python import git_utils
 
+
 @pytest.fixture
 def python_file(main_repo):
     # type: (repo.Repo) -> str
@@ -17,6 +18,7 @@ def python_file(main_repo):
     with open(file_path, 'w') as writing_file:
         writing_file.writelines(file_lines)
     return file_path
+
 
 @pytest.fixture
 def python_script(main_repo):
@@ -33,6 +35,7 @@ def python_script(main_repo):
         writing_file.writelines(file_lines)
     return file_path
 
+
 @pytest.fixture
 def non_python_file(main_repo):
     # type: (repo.Repo) -> str
@@ -47,10 +50,12 @@ def non_python_file(main_repo):
         writing_file.writelines(file_lines)
     return file_path
 
+
 @pytest.fixture
 def remote_repo(tmpdir):
     # type: ('py.path.LocalPath') -> repo.Repo
     return repo.Repo.init(str(tmpdir.join('remote')), bare=True)
+
 
 @pytest.fixture
 def main_repo(tmpdir, remote_repo):
@@ -66,6 +71,7 @@ def main_repo(tmpdir, remote_repo):
 
     return new_repo
 
+
 def test_detects_changed_python_files(main_repo, python_file, python_script):
     # type: (repo.Repo, str, str) -> None
 
@@ -79,6 +85,7 @@ def test_detects_changed_python_files(main_repo, python_file, python_script):
         os.path.basename(python_file),
     ]
 
+
 def test_doesnt_include_changed_nonpython_files(main_repo, python_file, non_python_file):
     # type: (repo.Repo, str, str) -> None
 
@@ -88,6 +95,7 @@ def test_doesnt_include_changed_nonpython_files(main_repo, python_file, non_pyth
 
     changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
     assert changed_files == [os.path.basename(python_file)]
+
 
 def test_only_include_modified_locally(main_repo, python_file):
     # type: (repo.Repo, str) -> None
@@ -118,6 +126,7 @@ def test_only_include_modified_locally(main_repo, python_file):
     # only the one new file is added
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
+
 def test_cant_find_remote_origin(main_repo, remote_repo):
     # type: (repo.Repo, repo.Repo) -> None
     main_repo.create_remote('foo', remote_repo.working_dir)
@@ -126,6 +135,7 @@ def test_cant_find_remote_origin(main_repo, remote_repo):
     with pytest.raises(git_utils.GitUtilsException) as ex:
         git_utils.changed_python_files_in_tree(main_repo.working_dir)
     assert "Unable to locate remote branch origin/master" in ex.exconly()
+
 
 def test_cant_find_origin_master(main_repo, remote_repo):
     # type: (repo.Repo, repo.Repo) -> None
@@ -140,6 +150,7 @@ def test_cant_find_origin_master(main_repo, remote_repo):
         git_utils.changed_python_files_in_tree(main_repo.working_dir)
     assert "Unable to locate remote branch origin/master" in ex.exconly()
 
+
 def test_dont_include_deleted_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
@@ -153,6 +164,7 @@ def test_dont_include_deleted_files(main_repo, python_file):
     main_repo.index.commit("removing python file")
 
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
+
 
 def test_include_modified_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
@@ -170,6 +182,7 @@ def test_include_modified_files(main_repo, python_file):
     main_repo.index.commit("modifying python file")
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
+
 def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
@@ -179,6 +192,7 @@ def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.commit("adding python file")
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
+
 
 def test_dont_include_scripts_with_extensions(main_repo):
     # type: (repo.Repo) -> None
@@ -194,6 +208,7 @@ def test_dont_include_scripts_with_extensions(main_repo):
     main_repo.index.add([file_path])
     main_repo.index.commit("adding script file with .sh extension")
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
+
 
 def test_dont_include_binary_files(main_repo):
     # type: (repo.Repo) -> None

@@ -66,7 +66,11 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         'C6010': ('Statement imports multiple items from %(module)s',
                   'multiple-import-items',
                   'Multiple imports usually result in noisy and potentially conflicting git diffs. To alleviate, '
-                  'separate imports into one item per line.')
+                  'separate imports into one item per line.'),
+        'C2611': ('Lambda has %(found)i nodes',
+                  'lambda-too-long',
+                  "Okay to use them for one-liners. If the code inside the lambda function is any longer than a "
+                  "certain length, it's probably better to define it as a regular (nested) function."),
     }
 
     options = (
@@ -86,6 +90,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             'default': 13,
             'type': 'int',
             'help': 'Number of AST nodes permitted in a finally-block'}),
+        ('max-lambda-nodes', {
+            'default': 15,
+            'type': 'int',
+            'help': 'Number of AST nodes permitted in a lambda'}),
     )
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
@@ -93,6 +101,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_excepthandler(self, node):  # type: (astroid.ExceptHandler) -> None
         self.__dont_catch_standard_error(node)
+
+    def visit_lambda(self, node):  # type: (astroid.Lambda) -> None
+        self.__use_simple_lambdas(node)
 
     def visit_tryexcept(self, node):  # type: (astroid.TryExcept) -> None
         self.__minimize_code_in_try_except(node)
@@ -201,3 +212,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         finally_body_nodes = sum((shopify_python.ast.count_tree_size(child) for child in node.finalbody))
         if finally_body_nodes > self.config.max_finally_nodes:  # pylint: disable=no-member
             self.add_message('finally-too-long', node=node, args={'found': finally_body_nodes})
+
+    def __use_simple_lambdas(self, node):  # type: (astroid.Lambda) -> None
+        if shopify_python.ast.count_tree_size(node) > self.config.max_lambda_nodes:  # pylint: disable=no-member
+            self.add_message('use-simple-lambdas', node=node)
