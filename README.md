@@ -21,7 +21,7 @@ exceptions:
 
 ## Versioning
 
-Project version numbering follows [Semantic Versioning 2.0.0](http://semver.org/spec/v2.0.0.html), i.e.
+Project that are producing libraries to be used in other projects should choose their release version numbers using [Semantic Versioning 2.0.0](http://semver.org/spec/v2.0.0.html), i.e.
 
 > Given a version number MAJOR.MINOR.PATCH, increment the:
 > 
