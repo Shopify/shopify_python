@@ -40,6 +40,7 @@ setuplib.setup(
         'pylint==1.6.5',
         'six>=1.10.0',
         'typing>=3.5.3.0',
+        'GitPython==2.1.1',
     ],
     extras_require={
         'dev': [
