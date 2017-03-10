@@ -36,34 +36,33 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     msgs = {
         'C2601': ('%(child)s is not a module or cannot be imported',
                   'import-modules-only',
-                  'Install %(child)s or only import packages or modules from it'),
+                  'Only import packages or modules and ensure that they are installed.'),
         'C2602': ('%(module)s imported relatively',
                   'import-full-path',
-                  'Import %(module)s using the absolute name.'),
+                  'Import modules using their absolute names.'),
         'C2603': ('%(name)s declared at the module level (i.e. global)',
                   'global-variable',
-                  'Avoid global variables in favor of class variables'),
+                  'Avoid global variables in favor of class variables.'),
         'C2604': ('Raised two-argument exception',
                   'two-arg-exception',
-                  "Use either raise Exception('message') or raise Exception"),
+                  "Use either raise Exception('message') or raise Exception."),
         'C2605': ('Raised deprecated string-exception',
                   'string-exception',
-                  "Use either raise Exception('message') or raise Exception"),
+                  "Use either raise Exception('message') or raise Exception."),
         'C2606': ('Caught StandardError',
                   'catch-standard-error',
-                  "Don't catch StandardError"),
+                  "Don't catch StandardError."),
         'C2607': ('Try body has %(found)i nodes',
                   'try-too-long',
-                  "%(found)i nodes is a larger than recommended 'try' body size making it more "
-                  "likely that an unexpected exception will be raised"),
+                  "The larger the 'try' body size, the more likely that an unexpected exception will be raised."),
         'C2608': ('Except body has %(found)i nodes',
                   'except-too-long',
-                  "%(found)i nodes is a larger than recommended 'except' body size making it more "
-                  "likely that an exception will be raised during exception handling"),
+                  "The larger the 'except' body size, the more likely that an exception will be raised during "
+                  "exception handling."),
         'C2609': ('Finally body has %(found)i nodes',
                   'finally-too-long',
-                  "%(found)i nodes is a larger than recommended 'finally' body size making it more "
-                  "likely that an exception will be raised during resource cleanup activities"),
+                  "The larger the 'finally' body size, the more likely that an exception will be raised during "
+                  "resource cleanup activities."),
     }
 
     options = (
