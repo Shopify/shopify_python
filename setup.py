@@ -5,20 +5,22 @@ import re
 
 try:
     import setuptools as setuplib
-except:
+except ImportError:
     import distutils.core as setuplib
 
 
-with open('shopify_python/__init__.py', 'r') as fd:
-    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                        fd.read(), re.MULTILINE).group(1)
+def get_version():
+    version = None
+    with open('shopify_python/__init__.py', 'r') as fdesc:
+        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fdesc.read(), re.MULTILINE).group(1)
+    if not version:
+        raise RuntimeError('Cannot find version information')
+    return version
 
-if not version:
-    raise RuntimeError('Cannot find version information')
 
 setuplib.setup(
     name='shopify_python',
-    version=version,
+    version=get_version(),
     description='Python Standards Library for Shopify',
     url='http://github.com/shopify/shopify_python',
     author='Shopify Data Acceleration',
