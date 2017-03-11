@@ -43,7 +43,7 @@ disable=C0111,redefined-outer-name
 
 # Set the output format. Available formats are text, parseable, colorized, msvs
 # (visual studio) and html
-output-format=text
+output-format=colorized
 
 # Put messages in a separate file for each module / package specified on the
 # command line instead of printing them on stdout. Reports (if any) will be
@@ -64,6 +64,8 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 # Add a comment according to your evaluation note. This is used by the global
 # evaluation report (RP0004).
 comment=no
+
+msg-template="{path}:{line}:{column} {msg_id}({symbol}) {msg}"
 
 
 [VARIABLES]
