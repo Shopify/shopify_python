@@ -16,7 +16,7 @@ autopep8:
 
 lint:
 	@echo 'Linting...'
-	@pylint --rcfile=pylintrc shopify_python tests.shopify_python
+	@pylint --rcfile=pylintrc setup.py shopify_python tests.shopify_python
 	@if [ "$(python_version_major)" == "3" ]; then \
 		echo 'Checking type annotations...'; \
 		mypy --py2 shopify_python tests/shopify_python --ignore-missing-imports; \
