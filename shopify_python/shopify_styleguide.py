@@ -39,12 +39,10 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
             if _type == tokenize.COMMENT:
 
                 def get_name(code):
-                    if hasattr(self.linter, 'msgs_store'):
-                        try:
-                            return self.linter.msgs_store.get_msg_display_string(code)
-                        except pylint.utils.UnknownMessage:
-                            pass
-                    return 'unknown'
+                    try:
+                        return self.linter.msgs_store.get_msg_display_string(code)
+                    except pylint.utils.UnknownMessage:
+                        return 'unknown'
 
                 matches = self.RE_PYLINT_DISABLE.match(string)
                 if matches:

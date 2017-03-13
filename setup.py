@@ -50,6 +50,7 @@ setuplib.setup(
             'pytest',
             'pytest-randomly',
             'mypy; python_version >= "3.3"',
+            'mock; python_version < "3.3"',
         ]
     }
 )
