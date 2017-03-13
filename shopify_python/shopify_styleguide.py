@@ -2,6 +2,8 @@ import re
 import tokenize
 import typing  # pylint: disable=unused-import
 
+import pylint.utils
+
 from pylint import checkers
 from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
@@ -21,7 +23,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     name = 'shopify-styleguide-checker'
 
     msgs = {
-        'C6101': ('%(code)s disabled as a message code',
+        'C6101': ("%(code)s disabled as a message code, use '%(name)s' instead",
                   'disable-name-only',
                   "Disable pylint rules via message name (e.g. unused-import) and not message code (e.g. W0611) to "
                   "help code reviewers understand why a linter rule was disabled for a line of code."),
@@ -35,9 +37,19 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
         for _type, string, start, _, _ in tokens:
             start_row, _ = start
             if _type == tokenize.COMMENT:
+
+                def get_name(code):
+                    if hasattr(self.linter, 'msgs_store'):
+                        try:
+                            return self.linter.msgs_store.get_msg_display_string(code)
+                        except pylint.utils.UnknownMessage:
+                            pass
+                    return 'unknown'
+
                 matches = self.RE_PYLINT_DISABLE.match(string)
                 if matches:
                     for msg in matches.group('messages').split(','):
                         msg = msg.strip()
                         if self.RE_PYLINT_MESSAGE_CODE.match(msg):
-                            self.add_message('disable-name-only', line=start_row, args={'code': msg})
+                            self.add_message('disable-name-only', line=start_row,
+                                             args={'code': msg, 'name': get_name(msg)})

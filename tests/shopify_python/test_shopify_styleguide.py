@@ -21,7 +21,7 @@ class TestShopifyStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """.strip())
 
         with self.assertAddsMessages(*[
-            pylint.testutils.Message('disable-name-only', line=line, args={'code': code})
+            pylint.testutils.Message('disable-name-only', line=line, args={'code': code, 'name': 'unknown'})
             for line, code in [(2, 'W0611'),
                                (3, 'W0611'),
                                (3, 'C0302'),
