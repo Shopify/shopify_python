@@ -7,38 +7,44 @@ from shopify_python import git_utils
 @pytest.fixture
 def python_file(main_repo):
     # type: (repo.Repo) -> str
-    file_text = "import os\n" \
-                "def foo():\n" \
-                "    return 4\n"
+    file_lines = [
+        "import os",
+        "def foo():",
+        "    return 4"
+    ]
     file_path = os.path.join(main_repo.working_dir, 'program.py')
 
     with open(file_path, 'w') as writing_file:
-        writing_file.write(file_text)
+        writing_file.writelines(file_lines)
     return file_path
 
 @pytest.fixture
 def python_script(main_repo):
     # type: (repo.Repo) -> str
-    file_text = "#!/usr/bin/env python3\n" \
-                "import os\n" \
-                "def bar():\n" \
-                "    return 6\n"
+    file_lines = [
+        "#!/usr/bin/env python3",
+        "import os",
+        "def bar():",
+        "    return 6"
+    ]
     file_path = os.path.join(main_repo.working_dir, 'program')
 
     with open(file_path, 'w') as writing_file:
-        writing_file.write(file_text)
+        writing_file.writelines(file_lines)
     return file_path
 
 @pytest.fixture
 def non_python_file(main_repo):
     # type: (repo.Repo) -> str
-    file_text = "[MASTER]\n" \
-                "\n" \
-                "# Minimum lines number of a similarity.\n" \
-                "min-similarity-lines=4\n"
+    file_lines = [
+        "[MASTER]",
+        "",
+        "# Minimum lines number of a similarity.",
+        "min-similarity-lines=4"
+    ]
     file_path = os.path.join(main_repo.working_dir, 'non_program')
     with open(file_path, 'w') as writing_file:
-        writing_file.write(file_text)
+        writing_file.writelines(file_lines)
     return file_path
 
 @pytest.fixture
