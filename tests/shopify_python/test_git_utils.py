@@ -173,3 +173,28 @@ def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.commit("adding python file")
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
+
+def test_dont_include_scripts_with_extensions(main_repo):
+    # type: (repo.Repo) -> None
+
+    file_path = os.path.join(main_repo.working_dir, 'other_file.sh')
+    with open(file_path, 'w') as writing_file:
+        writing_file.writelines([
+            "#!/usr/bin/env python3",
+            "import os",
+            "def bar():",
+            "    return 6"
+        ])
+    main_repo.index.add([file_path])
+    main_repo.index.commit("adding script file with .sh extension")
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
+
+def test_dont_include_binary_files(main_repo):
+    # type: (repo.Repo) -> None
+
+    file_path = os.path.join(main_repo.working_dir, 'other_file')
+    with open(file_path, 'wb') as writing_file:
+        writing_file.write(bytearray(b'{\x03\xff\x00d'))
+    main_repo.index.add([file_path])
+    main_repo.index.commit("adding binary file")
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []

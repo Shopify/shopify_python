@@ -1,7 +1,7 @@
 import os
-import typing  # pylint: disable=W0611
+import typing  # pylint: disable=unused-import
 from git import repo
-from git.refs import head  # pylint: disable=W0611
+from git.refs import head  # pylint: disable=unused-import
 
 
 class GitUtilsException(Exception):
@@ -25,9 +25,14 @@ def _file_is_python(path):
     if path.endswith('.py'):
         return True
     else:
-        with open(path) as might_be_python:
-            line = might_be_python.readline()
-            return line.startswith('#!') and 'python' in line
+        _, extension = os.path.splitext(path)
+        if not extension:
+            try:
+                with open(path) as might_be_python:
+                    line = might_be_python.readline()
+                    return line.startswith('#!') and 'python' in line
+            except (UnicodeDecodeError):
+                return False
 
 def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
