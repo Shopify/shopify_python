@@ -21,7 +21,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     name = 'shopify-styleguide-checker'
 
     msgs = {
-        'C2801': ('%(code)s disabled as a message code',
+        'C6101': ('%(code)s disabled as a message code',
                   'disable-name-only',
                   "Disable pylint rules via message name (e.g. unused-import) and not message code (e.g. W0611) to "
                   "help code reviewers understand why a linter rule was disabled for a line of code."),
