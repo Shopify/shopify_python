@@ -68,7 +68,10 @@ def test_detects_changed_python_files(main_repo, python_file, python_script):
     main_repo.index.commit("adding python files")
 
     changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
-    assert sorted(changed_files) == ['program', 'program.py']
+    assert sorted(changed_files) == [
+        os.path.basename(python_script),
+        os.path.basename(python_file),
+    ]
 
 def test_doesnt_include_changed_nonpython_files(main_repo, python_file, non_python_file):
     # type: (repo.Repo, str, str) -> None
@@ -78,7 +81,7 @@ def test_doesnt_include_changed_nonpython_files(main_repo, python_file, non_pyth
     main_repo.index.commit("adding mixed files")
 
     changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
-    assert changed_files == ['program.py']
+    assert changed_files == [os.path.basename(python_file)]
 
 def test_only_include_modified_locally(main_repo, python_file):
     # type: (repo.Repo, str) -> None
@@ -107,7 +110,7 @@ def test_only_include_modified_locally(main_repo, python_file):
     assert local_master_commit != remote_master_commit
 
     # only the one new file is added
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == ['program.py']
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 def test_cant_find_remote_origin(main_repo, remote_repo):
     # type: (repo.Repo, repo.Repo) -> None
@@ -159,14 +162,14 @@ def test_include_modified_files(main_repo, python_file):
 
     main_repo.index.add([python_file])
     main_repo.index.commit("modifying python file")
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == ['program.py']
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
-    assert os.path.exists(os.path.join(main_repo.working_dir, 'program.py'))
+    assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.add([python_file])
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.commit("adding python file")
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == ['program.py']
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
