@@ -32,7 +32,8 @@ def _file_is_python(path):
                     line = might_be_python.readline()
                     return line.startswith('#!') and 'python' in line
             except UnicodeDecodeError:
-                return False
+                pass
+        return False
 
 def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
