@@ -167,6 +167,6 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
 
         module2_node = root['module2']
-        message = pylint.testutils.Message('multiple-import-items', node=module2_node)
+        message = pylint.testutils.Message('multiple-import-items', node=module2_node, args={'module': 'package.module'})
         with self.assert_adds_code_messages(['multiple-import-items'], message):
             self.walk(root)

@@ -63,7 +63,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'finally-too-long',
                   "The larger the 'finally' body size, the more likely that an exception will be raised during "
                   "resource cleanup activities."),
-        'C2610': ('%s imports multiple items in one import statement',
+        'C6010': ('Multiple items imported from %(module)s in one import statement.',
                   'multiple-import-items',
                   'Separate imports into one item per line.')
     }
@@ -143,7 +143,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __limit_one_import(self, node):  # type: (astroid.ImportFrom) -> None
         """Only one item imported per line."""
         if len(node.names) > 1:
-            self.add_message('multiple-import-items', node=node)
+            self.add_message('multiple-import-items', node=node, args={'module': node.modname})
 
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""
