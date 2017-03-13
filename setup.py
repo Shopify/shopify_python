@@ -49,7 +49,7 @@ setuplib.setup(
             'autopep8',
             'pytest',
             'pytest-randomly',
-            'mypy; python_version > "3.3"',
+            'mypy; python_version >= "3.3"',
         ]
     }
 )
