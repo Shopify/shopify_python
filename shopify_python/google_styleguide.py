@@ -63,9 +63,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'finally-too-long',
                   "The larger the 'finally' body size, the more likely that an exception will be raised during "
                   "resource cleanup activities."),
-        'C6010': ('Multiple items imported from %(module)s in one import statement.',
+        'C6010': ('Statement imports multiple items from %(module)s',
                   'multiple-import-items',
-                  'Separate imports into one item per line.')
+                  'Multiple imports usually result in noisy and potentially conflicting git diffs. To alleviate, '
+                  'separate imports into one item per line.')
     }
 
     options = (
