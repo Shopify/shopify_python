@@ -63,6 +63,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'finally-too-long',
                   "The larger the 'finally' body size, the more likely that an exception will be raised during "
                   "resource cleanup activities."),
+        'C6010': ('Statement imports multiple items from %(module)s',
+                  'multiple-import-items',
+                  'Multiple imports usually result in noisy and potentially conflicting git diffs. To alleviate, '
+                  'separate imports into one item per line.')
     }
 
     options = (
@@ -99,6 +103,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def visit_importfrom(self, node):  # type: (astroid.ImportFrom) -> None
         self.__import_modules_only(node)
         self.__import_full_path_only(node)
+        self.__limit_one_import(node)
 
     def visit_raise(self, node):  # type: (astroid.Raise) -> None
         self.__dont_use_archaic_raise_syntax(node)
@@ -135,6 +140,11 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         if node.level:
             for child_module in self.__get_module_names(node):
                 self.add_message('import-full-path', node=node, args={'module': child_module})
+
+    def __limit_one_import(self, node):  # type: (astroid.ImportFrom) -> None
+        """Only one item imported per line."""
+        if len(node.names) > 1:
+            self.add_message('multiple-import-items', node=node, args={'module': node.modname})
 
     def __avoid_global_variables(self, node):  # type: (astroid.Assign) -> None
         """Avoid global variables."""

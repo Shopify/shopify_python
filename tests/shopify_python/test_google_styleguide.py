@@ -1,3 +1,4 @@
+import contextlib
 import sys
 
 import astroid
@@ -10,6 +11,16 @@ from shopify_python import google_styleguide
 class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
     CHECKER_CLASS = google_styleguide.GoogleStyleGuideChecker
+
+    @contextlib.contextmanager
+    def assert_adds_code_messages(self, codes, *messages):
+        """Asserts that the checker received the list of messages, including only messages with the given codes."""
+        yield
+        got = [message for message in self.linter.release_messages() if message[0] in codes]
+        msg = ('Expected messages did not match actual.\n'
+               'Expected:\n%s\nGot:\n%s' % ('\n'.join(repr(m) for m in messages),
+                                            '\n'.join(repr(m) for m in got)))
+        self.assertEqual(list(messages), got, msg)
 
     def test_importing_function_fails(self):
         root = astroid.builder.parse("""
@@ -50,7 +61,8 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         from . import string
         from .. import string, os
         """)
-        with self.assertAddsMessages(
+        with self.assert_adds_code_messages(
+            ['import-full-path'],
             pylint.testutils.Message('import-full-path', node=root.body[0], args={'module': '.string'}),
             pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.string'}),
             pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.os'}),
@@ -145,4 +157,16 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
             pylint.testutils.Message('try-too-long', node=try_except, args={'found': 28}),
             pylint.testutils.Message('except-too-long', node=try_except.handlers[0], args={'found': 39}),
         ):
+            self.walk(root)
+
+    def test_multiple_from_imports(self):
+        root = astroid.builder.parse("""
+        import sys
+        from package.module import module1, module2
+        from other_package import other_module as F
+        """)
+
+        module2_node = root['module2']
+        message = pylint.testutils.Message('multiple-import-items', node=module2_node, args={'module': 'package.module'})
+        with self.assert_adds_code_messages(['multiple-import-items'], message):
             self.walk(root)
