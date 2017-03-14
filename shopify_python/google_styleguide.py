@@ -71,7 +71,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'lambda-too-long',
                   "Okay to use them for one-liners. If the code inside the lambda function is any longer than a "
                   "certain length, it's probably better to define it as a regular (nested) function."),
-        'C2610': ('Multiple generators in list comprehension',
+        'C6012': ('Multiple generators in list comprehension',
                   'complex-list-comp',
                   "Complicated list comprehensions or generator expressions can be hard to read; "
                   "don't use multiple 'for' keywords"),
