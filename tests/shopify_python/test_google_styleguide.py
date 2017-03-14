@@ -167,6 +167,22 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
 
         module2_node = root['module2']
-        message = pylint.testutils.Message('multiple-import-items', node=module2_node, args={'module': 'package.module'})
+        message = pylint.testutils.Message(
+            'multiple-import-items',
+            node=module2_node,
+            args={
+                'module': 'package.module'})
         with self.assert_adds_code_messages(['multiple-import-items'], message):
+            self.walk(root)
+
+    def test_use_simple_lamndas(self):
+        root = astroid.builder.parse("""
+        def fnc():
+            good = lambda x, y: x if x % 2 == 0 else y
+            bad = lambda x, y: (x * 2 * 3 + 4) if x % 2 == 0 else (y * 2 * 3 + 4)
+        """)
+        fnc = root.body[0]
+        bad_list_comp = fnc.body[1].value
+        message = pylint.testutils.Message('use-simple-lambdas', node=bad_list_comp)
+        with self.assertAddsMessages(message):
             self.walk(root)
