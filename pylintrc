@@ -34,9 +34,9 @@ load-plugins=shopify_python
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
 # CHANGED:
-# C0111: Missing docstring
+# missing-docstring: docstrings should be optional
 # redefined-outer-name: doesn't play well with pytest fixtures
-disable=C0111,redefined-outer-name
+disable=missing-docstring,redefined-outer-name
 
 
 [REPORTS]
