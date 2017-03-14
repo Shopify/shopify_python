@@ -186,3 +186,15 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         message = pylint.testutils.Message('use-simple-lambdas', node=bad_list_comp)
         with self.assertAddsMessages(message):
             self.walk(root)
+
+    def test_use_simple_list_comps(self):
+        root = astroid.builder.parse("""
+        def fnc():
+            good = [x for x in range(0,10)]
+            bad = [(x, y) for x in range(0,10) for y in range(0,10)]
+        """)
+        fnc = root.body[0]
+        bad_list_comp = fnc.body[1].value
+        message = pylint.testutils.Message('complex-list-comp', node=bad_list_comp)
+        with self.assertAddsMessages(message):
+            self.walk(root)

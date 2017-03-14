@@ -71,6 +71,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'lambda-too-long',
                   "Okay to use them for one-liners. If the code inside the lambda function is any longer than a "
                   "certain length, it's probably better to define it as a regular (nested) function."),
+        'C6012': ('Multiple generators in list comprehension',
+                  'complex-list-comp',
+                  "Complicated list comprehensions or generator expressions can be hard to read; "
+                  "don't use multiple 'for' keywords"),
     }
 
     options = (
@@ -104,6 +108,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_lambda(self, node):  # type: (astroid.Lambda) -> None
         self.__use_simple_lambdas(node)
+
+    def visit_listcomp(self, node):  # type: (astroid.ListComp) -> None
+        self.__use_simple_list_comp(node)
 
     def visit_tryexcept(self, node):  # type: (astroid.TryExcept) -> None
         self.__minimize_code_in_try_except(node)
@@ -216,3 +223,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __use_simple_lambdas(self, node):  # type: (astroid.Lambda) -> None
         if shopify_python.ast.count_tree_size(node) > self.config.max_lambda_nodes:  # pylint: disable=no-member
             self.add_message('use-simple-lambdas', node=node)
+
+    def __use_simple_list_comp(self, node):  # type: (astroid.ListComp) -> None
+        """List comprehensions are okay to use for simple cases."""
+        if len(node.generators) > 1:
+            self.add_message('complex-list-comp', node=node)
