@@ -11,6 +11,7 @@ before_install:
 install:
   - make install
 script:
-  - make test
+  - make run_tests
+  - make lint
 notifications:
   email: false
