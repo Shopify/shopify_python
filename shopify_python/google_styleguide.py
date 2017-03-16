@@ -245,7 +245,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             try:
                 if_body_name = node.body[0].targets[0].name
                 else_body_name = node.orelse[0].targets[0].name
-                if if_body_name == else_body_name:
-                    self.add_message('cond-expr', node=node)
-            except BaseException:
+            except AttributeError:
                 return
+            if if_body_name == else_body_name:
+                self.add_message('cond-expr', node=node)
