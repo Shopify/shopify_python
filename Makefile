@@ -12,7 +12,7 @@ clean:
 
 autopep8:
 	@echo 'Auto Formatting...'
-	@$(python_files) | xargs -0 autopep8 --max-line-length 120 --jobs 0 --in-place --aggressive
+	@$(python_files) | xargs -0 autopep8 --jobs 0 --in-place --aggressive
 
 lint:
 	@echo 'Linting...'
