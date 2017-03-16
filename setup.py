@@ -39,18 +39,19 @@ setuplib.setup(
     ],
     test_suite='tests',
     install_requires=[
+        'GitPython==2.1.1',
         'pylint==1.6.5',
         'six>=1.10.0',
         'typing>=3.5.3.0',
-        'GitPython==2.1.1',
     ],
     extras_require={
         'dev': [
             'autopep8',
+            'mock; python_version < "3.3"',
+            'mypy; python_version >= "3.3"',
+            'pep8',
             'pytest',
             'pytest-randomly',
-            'mypy; python_version >= "3.3"',
-            'mock; python_version < "3.3"',
         ]
     }
 )
