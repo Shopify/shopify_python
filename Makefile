@@ -12,7 +12,7 @@ clean:
 
 autopep8:
 	@echo 'Auto Formatting...'
-	@$(python_files) | xargs -0 autopep8 --max-line-length 120 --jobs 0 --in-place --aggressive
+	@$(python_files) | xargs -0 autopep8 --jobs 0 --in-place --aggressive
 
 lint:
 	@echo 'Linting...'
@@ -21,6 +21,7 @@ lint:
 		echo 'Checking type annotations...'; \
 		mypy --py2 shopify_python tests/shopify_python --ignore-missing-imports; \
 	fi
+	@pep8
 
 autolint: autopep8 lint
 
@@ -29,8 +30,5 @@ run_tests: clean
 
 test: autopep8 run_tests lint
 
-setup_dev:
+install:
 	pip install -e .[dev]
-
-setup:
-	pip install .

@@ -9,8 +9,9 @@ python:
 before_install:
   - pip install -U pip setuptools
 install:
-  - make setup_dev
+  - make install
 script:
-  - make test
+  - make run_tests
+  - make lint
 notifications:
   email: false
