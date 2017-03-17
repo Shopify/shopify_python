@@ -200,22 +200,28 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
             self.walk(root)
 
     def test_use_cond_exprs(self):
+        # this parsed expression should send a message
         root_to_msg = astroid.builder.parse("""
             if 1 < 2:
                 num = 1
             else:
                 num = 2
             """)
-        if_node = root_to_msg.body[0]
-        message = pylint.testutils.Message('cond-expr', node=if_node)
-        with self.assertAddsMessages(message):
-            self.walk(root_to_msg)
 
-        root_to_not_msg = astroid.builder.parse("""
+        # this parsed expression should NOT send a message
+        root_not_msg = astroid.builder.parse("""
             if 1 < 2:
                 num = 1
             else:
                 dum = 2
             """)
-        with self.assertAddsMessages():
-            self.walk(root_to_not_msg)
+
+        # root_to_msg should add a message
+        if_node = root_to_msg.body[0]
+        message = pylint.testutils.Message('cond-expr', node=if_node)
+        with self.assertAddsMessages(message):
+            self.walk(root_to_msg)
+
+        # root_not_msg should add no messages
+        with self.assertNoMessages():
+            self.walk(root_not_msg)

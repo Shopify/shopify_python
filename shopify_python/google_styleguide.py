@@ -241,11 +241,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __use_cond_expr(self, node):  # type: (astroid.If) -> None
         """Only one liner conditional expressions"""
 
-        if (len(node.body) == 1) and (len(node.orelse) == 1):
-            try:
+        if len(node.body) == 1 and len(node.orelse) == 1:
+            if (isinstance(node.body[0], astroid.Assign) and
+                    isinstance(node.body[0].targets[0], astroid.AssignName) and
+                    isinstance(node.orelse[0], astroid.Assign) and
+                    isinstance(node.orelse[0].targets[0], astroid.AssignName)):
                 if_body_name = node.body[0].targets[0].name
                 else_body_name = node.orelse[0].targets[0].name
-            except AttributeError:
-                return
-            if if_body_name == else_body_name:
-                self.add_message('cond-expr', node=node)
+                if if_body_name == else_body_name:
+                    self.add_message('cond-expr', node=node)
