@@ -75,6 +75,11 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'complex-list-comp',
                   "Complicated list comprehensions or generator expressions can be hard to read; "
                   "don't use multiple 'for' keywords"),
+        'C6013': ('Use Conditional Expressions for one-liners. For example: x = 1 if cond else 2.',
+                  'cond-expr',
+                  "Conditional expressions are mechanisms that provide a shorter syntax for if statements."
+                  "For example: x = 1 if cond else 2."
+                  "Conditional Expressions okay to use for one-liners. In other cases prefer to use a complete if statement."),
     }
 
     options = (
@@ -125,6 +130,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_raise(self, node):  # type: (astroid.Raise) -> None
         self.__dont_use_archaic_raise_syntax(node)
+
+    def visit_if(self, node):
+        self.__use_cond_expr(node) # type: (astroid.If) -> None
 
     @staticmethod
     def __get_module_names(node):  # type: (astroid.ImportFrom) -> typing.Generator[str, None, None]
@@ -228,3 +236,16 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """List comprehensions are okay to use for simple cases."""
         if len(node.generators) > 1:
             self.add_message('complex-list-comp', node=node)
+
+
+    def __use_cond_expr(self, node):  # type: (astroid.If) -> None
+        """Only one liner conditional expressions"""
+       
+        variables = []
+        for child in list(node.get_children()):
+            if str(child) == "Assign()":    
+                for target in child.targets:
+                    variables.append(target.name)
+
+        if (len(variables) == 2) and (variables[0] == variables[1]):
+            self.add_message('cond-expr', node=node)

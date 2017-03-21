@@ -198,3 +198,25 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         message = pylint.testutils.Message('complex-list-comp', node=bad_list_comp)
         with self.assertAddsMessages(message):
             self.walk(root)
+
+    def test_use_cond_exprs(self):
+        root = astroid.builder.parse("""
+            if 1 < 2:
+                num = 1
+            else:
+                num = 2
+            """)
+        if_node = root.body[0]
+        message = pylint.testutils.Message('cond-expr', node=if_node)
+        with self.assertAddsMessages(message):
+            self.walk(root)
+
+    def test_dont_use_cond_exprs(self):
+        root = astroid.builder.parse("""
+            if 1 < 2:
+                num = 1
+            else:
+                dum = 2
+            """)
+        with self.assertAddsMessages():
+            self.walk(root)
