@@ -221,8 +221,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             self.add_message('finally-too-long', node=node, args={'found': finally_body_nodes})
 
     def __use_simple_lambdas(self, node):  # type: (astroid.Lambda) -> None
-        if shopify_python.ast.count_tree_size(node) > self.config.max_lambda_nodes:  # pylint: disable=no-member
-            self.add_message('use-simple-lambdas', node=node)
+        lambda_nodes = shopify_python.ast.count_tree_size(node)
+        if lambda_nodes > self.config.max_lambda_nodes:  # pylint: disable=no-member
+            self.add_message('use-simple-lambdas', node=node, args={'found': lambda_nodes})
 
     def __use_simple_list_comp(self, node):  # type: (astroid.ListComp) -> None
         """List comprehensions are okay to use for simple cases."""

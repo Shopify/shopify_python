@@ -7,7 +7,7 @@ from shopify_python import google_styleguide
 from shopify_python import shopify_styleguide
 
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 
 def register(linter):  # type: (lint.PyLinter) -> None
