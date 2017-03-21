@@ -68,7 +68,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'Multiple imports usually result in noisy and potentially conflicting git diffs. To alleviate, '
                   'separate imports into one item per line.'),
         'C6011': ('Lambda has %(found)i nodes',
-                  'lambda-too-long',
+                  'use-simple-lambdas',
                   "Okay to use them for one-liners. If the code inside the lambda function is any longer than a "
                   "certain length, it's probably better to define it as a regular (nested) function."),
         'C6012': ('Multiple generators in list comprehension',
