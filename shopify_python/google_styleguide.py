@@ -75,6 +75,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'complex-list-comp',
                   "Complicated list comprehensions or generator expressions can be hard to read; "
                   "don't use multiple 'for' keywords"),
+        'C6013': ('Use Conditional Expressions for one-liners. For example: x = 1 if cond else 2.',
+                  'cond-expr',
+                  "Conditional expressions are mechanisms that provide a shorter syntax for if statements. "
+                  "For example: x = 1 if cond else 2. "
+                  "Conditional Expressions okay to use for one-liners. "
+                  "In other cases prefer to use a complete if statement. "),
     }
 
     options = (
@@ -125,6 +131,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_raise(self, node):  # type: (astroid.Raise) -> None
         self.__dont_use_archaic_raise_syntax(node)
+
+    def visit_if(self, node):
+        self.__use_cond_expr(node)  # type: (astroid.If) -> None
 
     @staticmethod
     def __get_module_names(node):  # type: (astroid.ImportFrom) -> typing.Generator[str, None, None]
@@ -229,3 +238,16 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """List comprehensions are okay to use for simple cases."""
         if len(node.generators) > 1:
             self.add_message('complex-list-comp', node=node)
+
+    def __use_cond_expr(self, node):  # type: (astroid.If) -> None
+        """Only one liner conditional expressions"""
+
+        if len(node.body) == 1 and len(node.orelse) == 1:
+            if (isinstance(node.body[0], astroid.Assign) and
+                    isinstance(node.body[0].targets[0], astroid.AssignName) and
+                    isinstance(node.orelse[0], astroid.Assign) and
+                    isinstance(node.orelse[0].targets[0], astroid.AssignName)):
+                if_body_name = node.body[0].targets[0].name
+                else_body_name = node.orelse[0].targets[0].name
+                if if_body_name == else_body_name:
+                    self.add_message('cond-expr', node=node)
