@@ -1,7 +1,9 @@
 import os
+import sys
 import typing  # pylint: disable=unused-import
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
+import autopep8
 
 
 class GitUtilsException(Exception):
@@ -48,3 +50,48 @@ def changed_python_files_in_tree(root_path):
     abs_modified = [os.path.join(git_repo.working_dir, x) for x in modified]
     return [mod for (mod, abs_mod) in zip(modified, abs_modified)
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
+
+
+# Options are defined here: https://pypi.python.org/pypi/autopep8#usage
+_AutopepOptions = typing.NamedTuple('_AutopepOptions', [  # pylint: disable=global-variable,invalid-name
+    ('aggressive', int),
+    ('diff', bool),
+    ('exclude', typing.Set[typing.List[str]]),
+    ('experimental', bool),
+    ('global_config', typing.Optional[typing.List[str]]),
+    ('ignore', str),
+    ('ignore_local_config', bool),
+    ('in_place', bool),
+    ('indent_size', int),
+    ('jobs', int),
+    ('line_range', typing.Optional[typing.Sequence]),
+    ('list_fixes', bool),
+    ('max_line_length', int),
+    ('pep8_passes', int),
+    ('recursive', bool),
+    ('select', typing.Set[str]),
+    ('verbose', int),
+])
+
+
+def autopep_files(files, max_line_length):
+    # type: (typing.List[str], int) -> None
+    files = files[:]
+    options = _AutopepOptions(aggressive=1,  # pylint:disable=not-callable
+                              diff=False,
+                              exclude=set(),
+                              experimental=False,
+                              global_config=None,
+                              ignore='',
+                              ignore_local_config=False,
+                              in_place=True,
+                              indent_size=4,
+                              jobs=0,
+                              line_range=None,
+                              list_fixes=False,
+                              max_line_length=max_line_length,
+                              pep8_passes=-1,
+                              recursive=False,
+                              select={'W', 'E'},
+                              verbose=0)
+    autopep8.fix_multiple_files(files, options, sys.stdout)
