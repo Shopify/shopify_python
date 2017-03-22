@@ -52,6 +52,7 @@ def changed_python_files_in_tree(root_path):
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
 
 
+# Options are defined here: https://pypi.python.org/pypi/autopep8#usage
 _AutopepOptions = typing.NamedTuple('_AutopepOptions', [  # pylint: disable=global-variable,invalid-name
     ('aggressive', int),
     ('diff', bool),
