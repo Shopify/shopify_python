@@ -1,9 +1,10 @@
 import os
 import sys
 import typing  # pylint: disable=unused-import
+import autopep8
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
-import autopep8
+from pylint import epylint as lint
 
 
 class GitUtilsException(Exception):
@@ -95,3 +96,11 @@ def autopep_files(files, max_line_length):
                               select={'W', 'E'},
                               verbose=0)
     autopep8.fix_multiple_files(files, options, sys.stdout)
+
+
+def pylint_files(files, **kwargs):
+    # type: (typing.List[str], **str) -> typing.List[str]
+    file_string = " ".join(files)
+    args = " ".join(["--{}={}".format(key, value) for key, value in kwargs.items()])
+    stdout, _ = lint.py_run("{} {}".format(file_string, args), return_std=True)
+    return stdout.readlines()
