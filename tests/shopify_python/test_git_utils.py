@@ -249,6 +249,7 @@ def test_autopep_files(tmpdir):
         with open(fixed_file) as file_to_check:
             assert file_to_check.readlines() == file_lines
 
+
 def test_linter(tmpdir):
     # type: ('py.path.LocalPath') -> None
     open(os.path.join(str(tmpdir), '__init__.py'), 'w')
@@ -261,7 +262,7 @@ def test_linter(tmpdir):
     with open(file_path, 'w') as file_to_write:
         file_to_write.writelines(file_lines)
 
-    lint_results = git_utils.pylint_files([str(tmpdir)])
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
 
     expected_failure = 'file.py:2: warning (W0311, bad-indentation, ) Bad indentation. Found 2 spaces, expected 4'
     assert lint_results[1].strip().endswith(expected_failure)
@@ -294,7 +295,7 @@ def test_linter_with_config(tmpdir):
         'ignore': os.path.basename(python_files[0]),
         'msg-template': msg_template,
     }
-    lint_results = git_utils.pylint_files([str(tmpdir)], **options)
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], **options)]
 
     assert len(lint_results) == 3
     assert lint_results[1].strip().endswith('file2.py:1: convention (C0303, trailing-whitespace, ) Trailing whitespace')
@@ -313,5 +314,5 @@ def test_passing_linter(tmpdir):
     with open(file_path, 'w') as file_to_write:
         file_to_write.writelines(file_lines)
 
-    lint_results = git_utils.pylint_files([str(tmpdir)])
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
     assert lint_results == []

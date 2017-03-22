@@ -99,8 +99,12 @@ def autopep_files(files, max_line_length):
 
 
 def pylint_files(files, **kwargs):
-    # type: (typing.List[str], **str) -> typing.List[str]
+    # type: (typing.List[str], **str) -> typing.Iterable[str]
     file_string = " ".join(files)
     args = " ".join(["--{}={}".format(key, value) for key, value in kwargs.items()])
     stdout, _ = lint.py_run("{} {}".format(file_string, args), return_std=True)
-    return stdout.readlines()
+    while True:
+        line = stdout.readline()
+        if line == '':
+            break
+        yield line
