@@ -219,3 +219,32 @@ def test_dont_include_binary_files(main_repo):
     main_repo.index.add([file_path])
     main_repo.index.commit("adding binary file")
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
+
+
+def test_autopep_files(tmpdir):
+    # type: ('py.path.LocalPath') -> None
+    file_lines = [
+        "def foo():\n",
+        "    return 1\n",
+        "def bar():\n",
+        "    return 2\n",
+    ]
+    file1_path = os.path.join(str(tmpdir), 'file1.py')
+    file2_path = os.path.join(str(tmpdir), 'file2.py')
+    with open(file1_path, 'w') as file1:
+        file1.writelines(file_lines)
+
+    file_lines.insert(2, "\n")
+    file_lines.insert(2, "\n")
+    assert len(file_lines) == 6
+
+    with open(file2_path, 'w') as file2:
+        file2.writelines(file_lines)
+    files_to_autopep = [file1_path, file2_path]
+
+    git_utils.autopep_files(files_to_autopep, 79)
+    assert len(files_to_autopep) == 2
+
+    for fixed_file in files_to_autopep:
+        with open(fixed_file) as file_to_check:
+            assert file_to_check.readlines() == file_lines
