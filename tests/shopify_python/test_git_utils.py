@@ -263,6 +263,8 @@ def test_linter(tmpdir):
         file_to_write.writelines(file_lines)
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
+    import ipdb
+    ipdb.set_trace()
 
     expected_failure = 'file.py:2: warning (W0311, bad-indentation, ) Bad indentation. Found 2 spaces, expected 4'
     assert lint_results[1].strip().endswith(expected_failure)
@@ -314,5 +316,5 @@ def test_passing_linter(tmpdir):
     with open(file_path, 'w') as file_to_write:
         file_to_write.writelines(file_lines)
 
-    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], reports='n')]
     assert lint_results == []

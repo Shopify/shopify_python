@@ -4,7 +4,10 @@ import typing  # pylint: disable=unused-import
 import autopep8
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
-from pylint import epylint as lint
+from pylint import lint
+from pylint.reporters import text
+from pylint import epylint
+import pipes
 
 
 class GitUtilsException(Exception):
@@ -100,11 +103,14 @@ def autopep_files(files, max_line_length):
 
 def pylint_files(files, **kwargs):
     # type: (typing.List[str], **str) -> typing.Iterable[str]
-    file_string = " ".join(files)
-    args = " ".join(["--{}={}".format(key, value) for key, value in kwargs.items()])
-    stdout, _ = lint.py_run("{} {}".format(file_string, args), return_std=True)
-    while True:
-        line = stdout.readline()
-        if line == '':
-            break
-        yield line
+    pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
+    t = pipes.Template()
+
+    with t.open('out', 'w') as out_write:
+        reporter = text.TextReporter(out_write)
+        output = lint.Run(files + pylint_args, exit=False)
+
+
+    with t.open('out', 'r') as out_read:
+        result = out_read.readlines()
+    return result
