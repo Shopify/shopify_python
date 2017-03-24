@@ -5,9 +5,8 @@ import autopep8
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
 from pylint import lint
+from pylint import utils  # pylint: disable=unused-import
 from pylint.reporters import text
-from pylint import epylint
-import pipes
 
 
 class GitUtilsException(Exception):
@@ -101,16 +100,24 @@ def autopep_files(files, max_line_length):
     autopep8.fix_multiple_files(files, options, sys.stdout)
 
 
+class _CustomPylintReporter(text.ColorizedTextReporter):
+    def __init__(self):
+        # type: () -> None
+        super(_CustomPylintReporter, self).__init__()
+        self.raw_messages = []  # type: typing.List[utils.Message]
+
+    def handle_message(self, msg):
+        # type: (utils.Message) -> None
+        self.raw_messages.append(msg)
+        super(_CustomPylintReporter, self).handle_message(msg)
+
+
 def pylint_files(files, **kwargs):
-    # type: (typing.List[str], **str) -> typing.Iterable[str]
+    # type: (typing.List[str], **str) -> typing.Iterable[utils.Message]
+    kwargs['reports'] = 'n'
     pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
-    t = pipes.Template()
 
-    with t.open('out', 'w') as out_write:
-        reporter = text.TextReporter(out_write)
-        output = lint.Run(files + pylint_args, exit=False)
+    reporter = _CustomPylintReporter()
+    lint.Run(files + pylint_args, exit=False, reporter=reporter)
 
-
-    with t.open('out', 'r') as out_read:
-        result = out_read.readlines()
-    return result
+    return reporter.raw_messages

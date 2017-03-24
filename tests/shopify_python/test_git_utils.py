@@ -252,69 +252,63 @@ def test_autopep_files(tmpdir):
 
 def test_linter(tmpdir):
     # type: ('py.path.LocalPath') -> None
-    open(os.path.join(str(tmpdir), '__init__.py'), 'w')
+    open(str(tmpdir.join('__init__.py')), 'w')
 
     file_lines = [
         "def foo():\n",
         "  return 1\n"
     ]
-    file_path = os.path.join(str(tmpdir), 'file.py')
-    with open(file_path, 'w') as file_to_write:
-        file_to_write.writelines(file_lines)
+    tmpdir.join('file.py').write('\n'.join(file_lines))
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
-    import ipdb
-    ipdb.set_trace()
 
-    expected_failure = 'file.py:2: warning (W0311, bad-indentation, ) Bad indentation. Found 2 spaces, expected 4'
-    assert lint_results[1].strip().endswith(expected_failure)
+    assert len(lint_results) == 2
+    assert lint_results[0].symbol == 'bad-indentation'
+    assert lint_results[1].symbol == 'blacklisted-name'
 
 
 def test_linter_with_config(tmpdir):
     # type: ('py.path.LocalPath') -> None
-    open(os.path.join(str(tmpdir), '__init__.py'), 'w')
+    open(str(tmpdir.join('__init__.py')), 'w')
 
     file_lines = [
         "def my_function():    \n"
         "  return 1\n"
     ]
-    python_files = [os.path.join(str(tmpdir), filename) for filename in ['file1.py', 'file2.py']]
+    python_files = [tmpdir.join(filename) for filename in ['file1.py', 'file2.py']]
     for path in python_files:
-        with open(path, 'w') as file_to_write:
-            file_to_write.writelines(file_lines)
+        path.write('\n'.join(file_lines))
 
     pylintrc_lines = [
         "[MESSAGES CONTROL]\n",
         "disable=bad-indentation,missing-docstring\n"
     ]
-    pylintrc_path = os.path.join(str(tmpdir), 'pylintrc')
-    with open(pylintrc_path, 'w') as rcfile:
-        rcfile.writelines(pylintrc_lines)
+    pylintrc_path = tmpdir.join('pylintrc')
+    pylintrc_path.write('\n'.join(pylintrc_lines))
 
     msg_template = '"{path}:{line}:{column} {msg_id}({symbol}) {msg}"'
     options = {
-        'rcfile': pylintrc_path,
-        'ignore': os.path.basename(python_files[0]),
+        'rcfile': str(pylintrc_path),
+        'ignore': os.path.basename(str(python_files[0])),
         'msg-template': msg_template,
     }
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], **options)]
 
-    assert len(lint_results) == 3
-    assert lint_results[1].strip().endswith('file2.py:1: convention (C0303, trailing-whitespace, ) Trailing whitespace')
+    assert len(lint_results) == 1
+    assert lint_results[0].path == python_files[1]
+    assert lint_results[0].symbol == 'trailing-whitespace'
 
 
 def test_passing_linter(tmpdir):
     # type: ('py.path.LocalPath') -> None
-    open(os.path.join(str(tmpdir), '__init__.py'), 'w')
+    open(str(tmpdir.join('__init__.py')), 'w')
 
     file_lines = [
         "def my_function():\n"
         '    """This is a docstring."""\n',
         "    return 1\n"
     ]
-    file_path = os.path.join(str(tmpdir), 'file.py')
-    with open(file_path, 'w') as file_to_write:
-        file_to_write.writelines(file_lines)
+    tmpdir.join('file.py').write('\n'.join(file_lines))
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], reports='n')]
     assert lint_results == []
