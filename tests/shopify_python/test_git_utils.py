@@ -255,7 +255,7 @@ def test_linter(tmpdir):
     open(str(tmpdir.join('__init__.py')), 'w')
 
     file_lines = [
-        "def foo():\n",
+        "def foo():",
         "  return 1\n"
     ]
     tmpdir.join('file.py').write('\n'.join(file_lines))
@@ -272,7 +272,7 @@ def test_linter_with_config(tmpdir):
     open(str(tmpdir.join('__init__.py')), 'w')
 
     file_lines = [
-        "def my_function():    \n"
+        "def my_function():    ",
         "  return 1\n"
     ]
     python_files = [tmpdir.join(filename) for filename in ['file1.py', 'file2.py']]
@@ -305,7 +305,7 @@ def test_passing_linter(tmpdir):
 
     file_lines = [
         "def my_function():\n"
-        '    """This is a docstring."""\n',
+        '    """This is a docstring."""',
         "    return 1\n"
     ]
     tmpdir.join('file.py').write('\n'.join(file_lines))
