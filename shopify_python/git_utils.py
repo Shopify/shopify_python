@@ -1,9 +1,12 @@
 import os
 import sys
 import typing  # pylint: disable=unused-import
+import autopep8
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
-import autopep8
+from pylint import lint
+from pylint import utils  # pylint: disable=unused-import
+from pylint.reporters import text
 
 
 class GitUtilsException(Exception):
@@ -95,3 +98,26 @@ def autopep_files(files, max_line_length):
                               select={'W', 'E'},
                               verbose=0)
     autopep8.fix_multiple_files(files, options, sys.stdout)
+
+
+class _CustomPylintReporter(text.ColorizedTextReporter):
+    def __init__(self):
+        # type: () -> None
+        super(_CustomPylintReporter, self).__init__()
+        self.raw_messages = []  # type: typing.List[utils.Message]
+
+    def handle_message(self, msg):
+        # type: (utils.Message) -> None
+        self.raw_messages.append(msg)
+        super(_CustomPylintReporter, self).handle_message(msg)
+
+
+def pylint_files(files, **kwargs):
+    # type: (typing.List[str], **str) -> typing.Iterable[utils.Message]
+    kwargs['reports'] = 'n'
+    pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
+
+    reporter = _CustomPylintReporter()
+    lint.Run(files + pylint_args, exit=False, reporter=reporter)
+
+    return reporter.raw_messages
