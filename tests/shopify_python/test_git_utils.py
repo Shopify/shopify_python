@@ -254,11 +254,11 @@ def test_linter(tmpdir):
     # type: ('py.path.LocalPath') -> None
     open(str(tmpdir.join('__init__.py')), 'w')
 
-    file_lines = [
-        "def foo():",
+    file_text = (
+        "def foo():\n"
         "  return 1\n"
-    ]
-    tmpdir.join('file.py').write('\n'.join(file_lines))
+    )
+    tmpdir.join('file.py').write(file_text)
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)])]
 
@@ -271,20 +271,18 @@ def test_linter_with_config(tmpdir):
     # type: ('py.path.LocalPath') -> None
     open(str(tmpdir.join('__init__.py')), 'w')
 
-    file_lines = [
-        "def my_function():    ",
+    file_text = (
+        "def my_function():    \n"
         "  return 1\n"
-    ]
+    )
     python_files = [tmpdir.join(filename) for filename in ['file1.py', 'file2.py']]
     for path in python_files:
-        path.write('\n'.join(file_lines))
+        path.write(file_text)
 
-    pylintrc_lines = [
-        "[MESSAGES CONTROL]\n",
-        "disable=bad-indentation,missing-docstring\n"
-    ]
+    pylintrc_text = """[MESSAGES CONTROL]
+        disable=bad-indentation,missing-docstring\n"""
     pylintrc_path = tmpdir.join('pylintrc')
-    pylintrc_path.write('\n'.join(pylintrc_lines))
+    pylintrc_path.write(pylintrc_text)
 
     msg_template = '"{path}:{line}:{column} {msg_id}({symbol}) {msg}"'
     options = {
@@ -303,12 +301,12 @@ def test_passing_linter(tmpdir):
     # type: ('py.path.LocalPath') -> None
     open(str(tmpdir.join('__init__.py')), 'w')
 
-    file_lines = [
+    file_text = (
         "def my_function():\n"
-        '    """This is a docstring."""',
+        '    """This is a docstring."""\n'
         "    return 1\n"
-    ]
-    tmpdir.join('file.py').write('\n'.join(file_lines))
+    )
+    tmpdir.join('file.py').write(file_text)
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], reports='n')]
     assert lint_results == []
