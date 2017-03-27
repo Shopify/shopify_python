@@ -13,21 +13,20 @@ def package_source_root(tmpdir):
     # type: ('py.path.LocalPath') -> 'py.path.LocalPath'
     root = tmpdir.join('test_packaging')
 
-    root.join('setup.py').write('\n'.join([
-        "import setuptools",
-        "setuptools.setup(",
-        "    name='test_packaging',",
-        "    install_requires=[",
-        "        'shopify_python'",
-        "    ],",
-        "    entry_points={",
-        "        'egg_info.writers': [",
-        "            'git_sha.txt = shopify_python.packaging:write_package_revision',",
-        "        ],",
-        "    }",
-        ")"]),
-        ensure=True
-    )
+    root.join('setup.py').write("""
+import setuptools
+setuptools.setup(
+    name='test_packaging',
+    install_requires=[
+        'shopify_python'
+    ],
+    entry_points={
+        'egg_info.writers': [
+            'git_sha.txt = shopify_python.packaging:write_package_revision',
+        ],
+    }
+)
+    """, ensure=True )
     return root
 
 @pytest.fixture
