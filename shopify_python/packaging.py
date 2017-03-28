@@ -2,7 +2,7 @@ import os.path
 import subprocess
 
 import pkg_resources
-import setuptools
+import setuptools  # pylint: disable=unused-import
 
 def get_package_revision(package_name):
     # type: (str) -> str
