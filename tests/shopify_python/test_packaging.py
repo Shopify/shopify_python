@@ -38,9 +38,13 @@ def git_package_root(package_source_root):
     return package_source_root
 
 @pytest.fixture
-def package_root_with_revision_file(package_source_root):
+def revision_file_contents():
+    return '0080d5ea79fa9513cd7a1b5aeef19858cf52430f'
+
+@pytest.fixture
+def package_root_with_revision_file(package_source_root, revision_file_contents):
     # type: ('py.path.LocalPath') -> 'py.path.LocalPath'
-    package_source_root.join('REVISION').write("0080d5ea79fa9513cd7a1b5aeef19858cf52430f")
+    package_source_root.join('REVISION').write(revision_file_contents)
     return package_source_root
 
 @contextlib.contextmanager
@@ -84,13 +88,14 @@ def call_get_package_revision():
 
 @pytest.mark.parametrize('develop_mode', [True, False])
 def test_git_package(develop_mode, git_package_root):
+    git_sha = str(repo.Repo(str(git_package_root)).commit())
     with package_installed(git_package_root, develop_mode=develop_mode):
-        assert re.match('^[a-zA-Z0-9]{40}$', call_get_package_revision()) is not None
+        assert git_sha == call_get_package_revision()
 
 @pytest.mark.parametrize('develop_mode', [True, False])
-def test_with_revision_file(develop_mode, package_root_with_revision_file):
+def test_with_revision_file(develop_mode, package_root_with_revision_file, revision_file_contents):
     with package_installed(package_root_with_revision_file, develop_mode=develop_mode):
-        assert re.match('^[a-zA-Z0-9]{40}$', call_get_package_revision()) is not None
+        assert revision_file_contents == call_get_package_revision()
 
 @pytest.mark.parametrize('develop_mode', [True, False])
 def test_without_revision_info(develop_mode, package_source_root):
