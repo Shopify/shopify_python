@@ -5,9 +5,6 @@ import subprocess
 from git import repo
 import pytest
 
-from shopify_python import packaging
-
-
 @pytest.fixture
 def package_source_root(tmpdir):
     # type: ('py.path.LocalPath') -> 'py.path.LocalPath'
