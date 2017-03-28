@@ -49,13 +49,9 @@ def write_package_revision(cmd, _, filename):
     """
     git_sha = None
     if os.path.exists('.git'):
-        print('.git exists')
         git_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
     elif os.path.exists('REVISION'):
-        print('REVISION exists')
-        with open('REVISION') as f:
-            git_sha = f.read().strip()
-    else:
-        print('NO REVISION INFO')
+        with open('REVISION') as revision_file:
+            git_sha = revision_file.read().strip()
     if git_sha is not None:
         cmd.write_or_delete_file("Git SHA", filename, git_sha)

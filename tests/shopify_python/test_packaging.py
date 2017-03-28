@@ -26,7 +26,7 @@ setuptools.setup(
         ],
     }
 )
-    """, ensure=True )
+    """, ensure=True)
     return root
 
 @pytest.fixture
@@ -55,7 +55,7 @@ def package_installed(path, develop_mode):
     try:
         subprocess.check_output(['python', 'setup.py', 'sdist'], cwd=str(path))
     except subprocess.CalledProcessError as exc:
-        print exc.output
+        print(exc.output)
         raise
 
     base_command = ['pip', 'install']
@@ -65,7 +65,7 @@ def package_installed(path, develop_mode):
     try:
         subprocess.check_output(base_command + flags + arguments)
     except subprocess.CalledProcessError as exc:
-        print exc.output
+        print(exc.output)
         raise
 
     yield
@@ -73,7 +73,7 @@ def package_installed(path, develop_mode):
     try:
         subprocess.check_output(['pip', 'uninstall', '-y', 'test_packaging'])
     except subprocess.CalledProcessError as exc:
-        print exc.output
+        print(exc.output)
         raise
 
 # We can't just call shopify_python.packaging.get_package_revision within the current interpreter because pkg_resources
@@ -102,5 +102,5 @@ def test_without_revision_info(develop_mode, package_source_root):
     with package_installed(package_source_root, develop_mode=develop_mode):
         assert call_get_package_revision() == ''
 
-def test_uninstalled_package(package_source_root):
+def test_uninstalled_package():
     assert call_get_package_revision() == ''
