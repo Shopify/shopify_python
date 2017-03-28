@@ -4,6 +4,7 @@ import subprocess
 import pkg_resources
 import setuptools  # pylint: disable=unused-import
 
+
 def get_package_revision(package_name):
     # type: (str) -> str
     """Determine the Git commit hash for the Shopify package.
@@ -21,6 +22,7 @@ def get_package_revision(package_name):
         return egg_info.get_metadata('git_sha.txt')
 
     return ''
+
 
 def write_package_revision(cmd, _, filename):
     # type: (setuptools.Command, str, str) -> None
