@@ -46,7 +46,7 @@ def revision_file_contents():
 
 @pytest.fixture
 def package_root_with_revision_file(package_source_root, revision_file_contents):
-    # type: ('py.path.LocalPath') -> 'py.path.LocalPath'
+    # type: ('py.path.LocalPath', str) -> 'py.path.LocalPath'
     package_source_root.join('REVISION').write(revision_file_contents)
     return package_source_root
 
