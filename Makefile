@@ -32,3 +32,13 @@ test: autopep8 run_tests lint
 
 install:
 	pip install -e .[dev]
+
+release:
+	rm -rf build dist
+	@python setup.py sdist bdist_wheel
+
+upload_test: release
+	@twine upload dist/* -r testpypi
+
+upload: release
+	@twine upload dist/* -r pypi
