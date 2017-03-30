@@ -17,7 +17,7 @@ def get_package_revision(package_name):
     if egg_info is None:
         return ''
     if os.path.exists(os.path.join(egg_info.location, '.git')):
-        return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=egg_info.location).decode().strip()
+        return str(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=egg_info.location).decode()).strip()
     if egg_info.has_metadata('git_sha.txt'):
         return egg_info.get_metadata('git_sha.txt')
 

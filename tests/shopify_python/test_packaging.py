@@ -1,10 +1,11 @@
 from __future__ import print_function
-from __future__ import unicode_literals
 
 import contextlib
 import subprocess
+import typing  # pylint: disable=unused-import
 
 from git import repo
+import py  # pylint: disable=unused-import
 import pytest
 
 
@@ -34,13 +35,14 @@ setuptools.setup(
 def git_package_root(package_source_root):
     # type: ('py.path.LocalPath') -> 'py.path.LocalPath'
     package_repo = repo.Repo.init(str(package_source_root))
-    package_repo.index.add([str('setup.py')])
-    package_repo.index.commit("initial commit")
+    package_repo.index.add(['setup.py'])
+    package_repo.index.commit('initial commit')
     return package_source_root
 
 
 @pytest.fixture
 def revision_file_contents():
+    # type: () -> str
     return '0080d5ea79fa9513cd7a1b5aeef19858cf52430f'
 
 
@@ -53,7 +55,7 @@ def package_root_with_revision_file(package_source_root, revision_file_contents)
 
 @contextlib.contextmanager
 def package_installed(path, develop_mode):
-    # type: ('py.path.LocalPath', bool) -> None
+    # type: ('py.path.LocalPath', bool) -> typing.Iterator[None]
 
     # sdist is what initializes the egg-info.
     try:
@@ -86,14 +88,15 @@ def package_installed(path, develop_mode):
 # test package).
 def call_get_package_revision():
     # type: () -> str
-    return subprocess.check_output(['python', '-c', '\n'.join([
+    return str(subprocess.check_output(['python', '-c', '\n'.join([
         "import shopify_python.packaging",
         "print(shopify_python.packaging.get_package_revision('test-packaging'))"
-    ])]).decode().strip()
+    ])]).decode()).strip()
 
 
 @pytest.mark.parametrize('develop_mode', [True, False])
 def test_git_package(develop_mode, git_package_root):
+    # type: (bool, 'py.path.LocalPath') -> None
     git_sha = str(repo.Repo(str(git_package_root)).commit())
     with package_installed(git_package_root, develop_mode=develop_mode):
         assert git_sha == call_get_package_revision()
@@ -101,15 +104,18 @@ def test_git_package(develop_mode, git_package_root):
 
 @pytest.mark.parametrize('develop_mode', [True, False])
 def test_with_revision_file(develop_mode, package_root_with_revision_file, revision_file_contents):
+    # type: (bool, 'py.path.LocalPath', str) -> None
     with package_installed(package_root_with_revision_file, develop_mode=develop_mode):
         assert revision_file_contents == call_get_package_revision()
 
 
 @pytest.mark.parametrize('develop_mode', [True, False])
 def test_without_revision_info(develop_mode, package_source_root):
+    # type: (bool, 'py.path.LocalPath') -> None
     with package_installed(package_source_root, develop_mode=develop_mode):
         assert call_get_package_revision() == ''
 
 
 def test_uninstalled_package():
+    # type: () -> None
     assert call_get_package_revision() == ''
