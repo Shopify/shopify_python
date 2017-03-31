@@ -32,4 +32,4 @@ To release a new version of [`shopify_python`](https://pypi.python.org/pypi/shop
 8. Test that the release works by running `pip install -i https://testpypi.python.org/pypi shopify_python` in a fresh virtualenv and make sure that:
     - It installs correctly (you may need to manually install its dependencies b/c they probably aren't on Test PyPI); and
     - You can at least import a class/function from the library
-9. If everything looks OK, release to PyPI by running `make upload`
+9. If everything looks OK, release to PyPI by running `make upload_pypi`

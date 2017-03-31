@@ -40,5 +40,5 @@ release:
 upload_test: release
 	@twine upload dist/* -r testpypi
 
-upload: release
+upload_pypi: release
 	@twine upload dist/* -r pypi
