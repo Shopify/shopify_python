@@ -49,7 +49,7 @@ setuplib.setup(
             'autopep8',
             'mock; python_version < "3.3"',
             'mypy; python_version >= "3.3"',
-            'pep8',
+            'pycodestyle == 2.2.0',
             'pytest',
             'pytest-randomly',
         ]

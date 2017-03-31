@@ -21,7 +21,7 @@ lint:
 		echo 'Checking type annotations...'; \
 		mypy --py2 shopify_python tests/shopify_python --ignore-missing-imports; \
 	fi
-	@pep8
+	@pycodestyle
 
 autolint: autopep8 lint
 
