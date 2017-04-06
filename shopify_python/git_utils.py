@@ -22,10 +22,14 @@ def _remote_origin_master(git_repo):
 
 
 def _modified_in_branch(git_repo, other_ref):
-    # type: (repo.Repo, head.Head) -> typing.List[str]
-    commit = git_repo.active_branch.commit
-    modified = [x for x in commit.diff(other_ref.commit, R=True) if not x.deleted_file]
-    return [x.b_path for x in modified]
+    # type: (repo.Repo, head.Head) -> typing.Sequence[str]
+    common_commit = git_repo.merge_base(git_repo.active_branch, other_ref)[0]
+    diffs = common_commit.diff(git_repo.active_branch.commit)
+    changed_files = []
+    for diff in diffs:
+        if not diff.deleted_file:
+            changed_files.append(diff.b_path)
+    return changed_files
 
 
 def _file_is_python(path):

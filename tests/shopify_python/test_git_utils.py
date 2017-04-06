@@ -1,6 +1,7 @@
 import os
 import py  # pylint: disable=unused-import
 import pytest
+import git  # pylint: disable=unused-import
 from git import repo
 from shopify_python import git_utils
 
@@ -102,29 +103,45 @@ def test_only_include_modified_locally(main_repo, python_file):
 
     starting_commit = main_repo.commit()
 
+    def _add_and_commit_file(filename):
+        # type: (str) -> git.Commit
+
+        origin = main_repo.remote('origin')
+        full_path = os.path.join(main_repo.working_dir, filename)
+        open(full_path, 'w').close()
+        remote_master_commit = main_repo.index.commit("adding modified file")
+        origin.push()
+        return remote_master_commit
+
     # Add a file and push it to origin/master
-    origin = main_repo.remote('origin')
-    other_file = os.path.join(main_repo.working_dir, 'other_file.py')
-    open(other_file, 'w').close()
-    main_repo.index.add([other_file])
-    remote_master_commit = main_repo.index.commit("adding other file")
-    origin.push()
+    modified_file_commit = _add_and_commit_file('modified_file.py')
 
-    # Set local master back 1 commit
-    main_repo.active_branch.commit = 'HEAD~1'
+    # Create a new branch from here, but remain on master
+    main_repo.create_head('foo')
+    assert main_repo.active_branch.name == 'master'
 
-    # Create a new branch from here, add files
-    main_repo.create_head('foo').checkout()
-    main_repo.index.add([python_file])
+    # Add another file and push it to origin/master
+    added_file_commit = _add_and_commit_file('added_file.py')
+
+    # Checkout 'foo' branch, add, modify, and commit files
+    main_repo.branches['foo'].checkout()
+    assert main_repo.active_branch.name == 'foo'
+    modified_file_path = os.path.join(main_repo.working_dir, 'modified_file.py')
+    with open(modified_file_path, 'a') as modified_file:
+        modified_file.writelines("new line here")
+    main_repo.index.add([python_file, modified_file_path])
     local_master_commit = main_repo.index.commit("adding python file")
 
     # current commit should have same parents as remote master (diverged tree)
-    assert local_master_commit.parents == [starting_commit]
-    assert remote_master_commit.parents == [starting_commit]
-    assert local_master_commit != remote_master_commit
+    assert modified_file_commit.parents == [starting_commit]
+    assert added_file_commit.parents == [modified_file_commit]
+    assert local_master_commit.parents == [modified_file_commit]
+
+    assert local_master_commit != added_file_commit
 
     # only the one new file is added
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
+    expected = ['modified_file.py', 'program.py']
+    assert sorted(git_utils.changed_python_files_in_tree(main_repo.working_dir)) == expected
 
 
 def test_cant_find_remote_origin(main_repo, remote_repo):
