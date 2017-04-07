@@ -105,6 +105,7 @@ def autopep_files(files, max_line_length):
 
 
 class _CustomPylintReporter(text.ColorizedTextReporter):
+
     def __init__(self):
         # type: () -> None
         super(_CustomPylintReporter, self).__init__()
