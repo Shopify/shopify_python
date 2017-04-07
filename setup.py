@@ -49,7 +49,7 @@ setuplib.setup(
         'dev': [
             'mock==2.0.0; python_version < "3.3"',
             'mypy==0.501; python_version >= "3.3"',
-            'pycodestyle==2.2.0',
+            'pycodestyle==2.3.1',
             'pytest==3.0.6',
             'pytest-randomly==1.1.2',
         ]
