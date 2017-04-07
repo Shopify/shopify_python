@@ -46,12 +46,12 @@ setuplib.setup(
     ],
     extras_require={
         'dev': [
-            'autopep8',
-            'mock; python_version < "3.3"',
-            'mypy; python_version >= "3.3"',
+            'autopep8 == 1.3.1',
+            'mock == 2.0.0; python_version < "3.3"',
+            'mypy == 0.501; python_version >= "3.3"',
             'pycodestyle == 2.2.0',
-            'pytest',
-            'pytest-randomly',
+            'pytest == 3.0.7',
+            'pytest-randomly == 1.1.2',
         ]
     }
 )
