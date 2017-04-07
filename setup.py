@@ -47,11 +47,11 @@ setuplib.setup(
     ],
     extras_require={
         'dev': [
-            'mock; python_version < "3.3"',
-            'mypy; python_version >= "3.3"',
-            'pycodestyle == 2.2.0',
-            'pytest',
-            'pytest-randomly',
+            'mock==2.0.0; python_version < "3.3"',
+            'mypy==0.501; python_version >= "3.3"',
+            'pycodestyle==2.2.0',
+            'pytest==3.0.6',
+            'pytest-randomly==1.1.2',
         ]
     }
 )
