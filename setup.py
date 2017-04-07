@@ -39,14 +39,14 @@ setuplib.setup(
     ],
     test_suite='tests',
     install_requires=[
-        'GitPython==2.1.1',
-        'pylint==1.6.5',
-        'six>=1.10.0',
-        'typing>=3.5.3.0',
+        'GitPython>=2.1.1,<3',
+        'pylint>=1.6.5,<2',
+        'six>=1.10.0,<2',
+        'typing>=3.5.3.0,<4',
+        'autopep8>=1.2.2,<2',
     ],
     extras_require={
         'dev': [
-            'autopep8',
             'mock; python_version < "3.3"',
             'mypy; python_version >= "3.3"',
             'pycodestyle == 2.2.0',
