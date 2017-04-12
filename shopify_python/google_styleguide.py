@@ -28,6 +28,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     Checks that are already covered by Pylint include:
       - Never use catch-all 'except:' statements, or 'catch Exception' (bare-except, broad-except)
       - Do not use mutable objects as default values in the function or method definition (dangerous-default-value)
+      - Do not terminate your lines with semi-colons and
+        do not use semi-colons to put two commands on the same line. (unnecessary-semicolon, multiple-statements)
     """
     __implements__ = (interfaces.IAstroidChecker,)
 
