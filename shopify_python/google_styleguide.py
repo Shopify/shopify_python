@@ -81,6 +81,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "For example: x = 1 if cond else 2. "
                   "Conditional Expressions okay to use for one-liners. "
                   "In other cases prefer to use a complete if statement. "),
+        'C6015': ('If a class inherits from no other base classes, explicitly inherit from object; eg: %(example)s',
+                  'base-class-inheritance',
+                  'This also applies to nested classes')
     }
 
     options = (
@@ -134,6 +137,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_if(self, node):
         self.__use_cond_expr(node)  # type: (astroid.If) -> None
+
+    def visit_class(self, node):  # type: (astroid.Class) -> None
+        self.__inherit_from_object_class(node)
 
     @staticmethod
     def __get_module_names(node):  # type: (astroid.ImportFrom) -> typing.Generator[str, None, None]
@@ -251,3 +257,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                 else_body_name = node.orelse[0].targets[0].name
                 if if_body_name == else_body_name:
                     self.add_message('cond-expr', node=node)
+
+    def __inherit_from_object_class(self, node):  # type: (astroid.Class) -> None
+        """If a class inherits from no other base classes, explicitly inherit from object"""
+
+        if len(node.bases) == 0:
+            class_with_base = node.name + "(object)"
+            self.add_message('base-class-inheritance', node=node, args={'example': class_with_base})

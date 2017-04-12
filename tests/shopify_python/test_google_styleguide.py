@@ -225,3 +225,56 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         # root_not_msg should add no messages
         with self.assertNoMessages():
             self.walk(root_not_msg)
+
+    def test_pass_base_class_inheritance(self):
+        root = astroid.builder.parse("""
+        class SampleClass(object):
+            pass
+        """)
+
+        with self.assertNoMessages():
+            self.walk(root)
+
+        nested_root = astroid.builder.parse("""
+        class OuterClass(object):
+            class InnerClass(object):
+                pass
+        """)
+
+        with self.assertNoMessages():
+            self.walk(nested_root)
+
+        parent_root = astroid.builder.parse("""
+        class ChildClass(ParentClass):
+            pass
+        """)
+
+        with self.assertNoMessages():
+            self.walk(parent_root)
+
+    def test_fail_base_class_inheritance(self):
+        root = astroid.builder.parse("""
+        class SampleClass:
+            pass
+        """)
+
+        sample_class = root.body[0]
+        message = pylint.testutils.Message('base-class-inheritance', node=sample_class, args={
+            'example': 'SampleClass(object)'})
+        with self.assertAddsMessages(message):
+            self.walk(root)
+
+        nested_root = astroid.builder.parse("""
+        class OuterClass:
+            class InnerClass:
+                pass
+        """)
+
+        outer_class = nested_root.body[0]
+        inner_class = nested_root.body[0].body[0]
+        outer_message = pylint.testutils.Message('base-class-inheritance', node=outer_class, args={
+            'example': 'OuterClass(object)'})
+        inner_message = pylint.testutils.Message('base-class-inheritance', node=inner_class, args={
+            'example': 'InnerClass(object)'})
+        with self.assertAddsMessages(outer_message, inner_message):
+            self.walk(nested_root)
