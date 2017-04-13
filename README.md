@@ -18,6 +18,10 @@ exceptions:
   - Prefix class-private members and properties with double underscores. This invokes name-mangling, which provides some protection against violations of encapsulation.
   - Prefix module-private functions and variables with a single underscore.
 - Multi-line docstrings: The first line of text (summary line) appears on the same line as the opening three double-quotes.
+-  Base Class Inheritance
+	- If a class or nested class inherits from no other base classes, explicitly inherit from object.
+	- This won't be enforced for our pure Python 3 code, but we will enforce for Python 2 and 2/3 compatbile code.
+
 
 ## Versioning
 
