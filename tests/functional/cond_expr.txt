@@ -1,0 +1,1 @@
+cond-expr:2:fnc:Use Conditional Expressions for one-liners. For example: x = 1 if cond else 2.
