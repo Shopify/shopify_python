@@ -40,7 +40,7 @@ setuplib.setup(
     test_suite='tests',
     install_requires=[
         'GitPython>=2.1.1,<3',
-        'pylint>=1.6.5,<2',
+        'pylint>=1.6.5,<1.7',
         'six>=1.10.0,<2',
         'typing>=3.5.3.0,<4',
         'autopep8>=1.2.2,<2',
