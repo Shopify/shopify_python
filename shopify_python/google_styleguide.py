@@ -83,7 +83,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "For example: x = 1 if cond else 2. "
                   "Conditional Expressions okay to use for one-liners. "
                   "In other cases prefer to use a complete if statement. "),
-        'C6014': ('Prefer operator module function %(op)s to lambda function %(lambda_fun)s',
+        'C6014': ('Prefer operator module function %(op)s to lambda function',
                   'lambda-func',
                   "For common operations like multiplication, use the functions from the operator module"
                   "instead of lambda functions. For example, prefer operator.mul to lambda x, y: x * y."),
@@ -230,7 +230,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         children = list(node.get_children())
         if len(children) > 1 and not isinstance(children[1], astroid.Name):
             self.add_message('two-arg-exception', node=node)
-        elif len(children) == 1 and isinstance(children[0], six.string_types):
+        elif(len(children) == 1 and isinstance(children[0], astroid.Const) and
+             isinstance(children[0].value, six.string_types)):
             self.add_message('string-exception', node=node)
 
     def __dont_catch_standard_error(self, node):  # type: (astroid.ExceptHandler) -> None

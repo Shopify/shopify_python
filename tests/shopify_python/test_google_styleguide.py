@@ -95,10 +95,17 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
     def test_using_archaic_raise_fails(self):
         root = astroid.builder.parse("""
         raise MyException, 'Error message'
-        raise 'Error message'
         """)
         node = root.body[0]
         message = pylint.testutils.Message('two-arg-exception', node=node)
+        with self.assertAddsMessages(message):
+            self.walk(root)
+
+        root = astroid.builder.parse("""
+        raise 'Error message'
+        """)
+        node = root.body[0]
+        message = pylint.testutils.Message('string-exception', node=node)
         with self.assertAddsMessages(message):
             self.walk(root)
 
@@ -251,7 +258,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         unary_message = pylint.testutils.Message('lambda-func', node=ulam_fail, args={
             'op': 'operator.{}'.format(op_name),
             'lambda_fun': 'lambda x: {}'.format(expression)
-            })
+        })
         with self.assertAddsMessages(unary_message):
             self.walk(unary_root)
 
@@ -280,7 +287,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         binary_message = pylint.testutils.Message('lambda-func', node=binary_fail.body, args={
             'op': 'operator.{}'.format(op_name),
             'lambda_fun': 'lambda x, y: {}'.format(expression)
-            })
+        })
         with self.assertAddsMessages(binary_message):
             self.walk(binary_root)
 

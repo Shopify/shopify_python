@@ -1,0 +1,4 @@
+import-modules-only:5::os.path.join is not a module or cannot be imported
+import-modules-only:6::io.FileIO is not a module or cannot be imported
+import-modules-only:7::os.environ is not a module or cannot be imported
+import-modules-only:8::nonexistent_package.nonexistent_module is not a module or cannot be imported

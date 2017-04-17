@@ -1,0 +1,2 @@
+multiple-import-items:5::Statement imports multiple items from third
+multiple-import-items:6::Statement imports multiple items from sixth

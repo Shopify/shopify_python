@@ -1,0 +1,1 @@
+cond-expr:3::Use Conditional Expressions for one-liners, for example x = 1 if cond else 2.
