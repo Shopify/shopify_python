@@ -225,3 +225,34 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         # root_not_msg should add no messages
         with self.assertNoMessages():
             self.walk(root_not_msg)
+
+    def test_unary_lambda_func(self):
+        unary_root = astroid.builder.parse("""
+        def unaryfnc():
+            unary_pass = map(lambda x: not (x+3), [1, 2, 3, 4])
+            unary_fail = map(lambda x: -x, [1, 2, 3, 4])
+        """)
+
+        ulam_fail = unary_root.body[0].body[1].value.args[0]
+        unary_message = pylint.testutils.Message('lambda-func', node=ulam_fail, args={
+            'op': 'operator.neg',
+            'lambda_fun': 'lambda x: - x'
+            })
+        with self.assertAddsMessages(unary_message):
+            self.walk(unary_root)
+
+    def test_binary_lambda_func(self):
+        binary_root = astroid.builder.parse("""
+        def binaryfnc():
+            binary_pass = reduce(lambda x, y, z: x * y + z, [1, 2, 3])
+            binary_pass2 = map(lambda x: x + 3, [1, 2, 3, 4])
+            binary_fail = reduce(lambda x, y: x * y, [1, 2, 3, 4])
+        """)
+
+        binary_fail = binary_root.body[0].body[2].value.args[0]
+        bin_message = pylint.testutils.Message('lambda-func', node=binary_fail.body, args={
+            'op': 'operator.mul',
+            'lambda_fun': 'lambda x, y: x * y'
+        })
+        with self.assertAddsMessages(bin_message):
+            self.walk(binary_root)
