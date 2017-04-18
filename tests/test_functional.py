@@ -5,6 +5,10 @@
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
 """Functional full-module tests for PyLint."""
+
+# pylint: disable=invalid-name,too-few-public-methods,abstract-method,attribute-defined-outside-init,undefined-variable
+# pylint: disable=cond-expr,no-self-use,too-few-public-methods,use-simple-lambdas,protected-access,redefined-builtin
+
 import csv
 import collections
 import io
@@ -24,6 +28,7 @@ from pylint import interfaces
 from pylint import lint
 from pylint import reporters
 
+
 class test_dialect(csv.excel):
     if sys.version_info[0] < 3:
         delimiter = b':'
@@ -39,18 +44,16 @@ csv.register_dialect('test', test_dialect)
 class NoFileError(Exception):
     pass
 
+
 # Notes:
 # - for the purpose of this test, the confidence levels HIGH and UNDEFINED
 #   are treated as the same.
 
-# TODOs
-#  - implement exhaustivity tests
-
 # If message files should be updated instead of checked.
 UPDATE = False
 
-class OutputLine(collections.namedtuple('OutputLine',
-                ['symbol', 'lineno', 'object', 'msg', 'confidence'])):
+
+class OutputLine(collections.namedtuple('OutputLine', ['symbol', 'lineno', 'object', 'msg', 'confidence'])):
     @classmethod
     def from_msg(cls, msg):
         return cls(
@@ -107,7 +110,6 @@ class FunctionalTestFile(object):
         'requires': lambda s: s.split(',')
     }
 
-
     def __init__(self, directory, filename):
         self._directory = directory
         self.base = filename.replace('.py', '')
@@ -162,6 +164,7 @@ _OPERATORS = {
     '>=': operator.ge,
     '<=': operator.le,
 }
+
 
 def parse_expected_output(stream):
     return [OutputLine.from_csv(row) for row in csv.reader(stream, 'test')]
@@ -238,7 +241,7 @@ class LintModuleTest(object):
 
     def setUp(self):
         if self._should_be_skipped_due_to_version():
-            pytest.skip( 'Test cannot run with Python %s.' % (sys.version.split(' ')[0],))
+            pytest.skip('Test cannot run with Python %s.' % (sys.version.split(' ')[0],))
         missing = []
         for req in self._test_file.options['requires']:
             try:
@@ -301,10 +304,8 @@ class LintModuleTest(object):
 
         expected_messages, expected_text = self._get_expected()
         received_messages, received_text = self._get_received()
-
         print self._get_expected()
         print self._get_received()
-
         if expected_messages != received_messages:
             msg = ['Wrong results for file "%s":' % (self._test_file.base)]
             missing, unexpected = multiset_difference(expected_messages,
@@ -352,6 +353,7 @@ class LintModuleOutputUpdate(LintModuleTest):
                 writer = csv.writer(fobj, dialect='test')
                 for line in remaining:
                     writer.writerow(line.to_csv())
+
 
 def get_tests():
     input_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),

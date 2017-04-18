@@ -1,7 +1,7 @@
 import re
 import typing  # pylint: disable=unused-import
 
-import astroid  # pylint: disable=unused-import
+import astroid  # pylint: disable=unused-import,no-name-in-module
 import shopify_python.ast
 import six
 
