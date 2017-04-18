@@ -304,8 +304,7 @@ class LintModuleTest(object):
 
         expected_messages, expected_text = self._get_expected()
         received_messages, received_text = self._get_received()
-        print self._get_expected()
-        print self._get_received()
+
         if expected_messages != received_messages:
             msg = ['Wrong results for file "%s":' % (self._test_file.base)]
             missing, unexpected = multiset_difference(expected_messages,
