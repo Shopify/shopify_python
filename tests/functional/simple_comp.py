@@ -1,18 +1,20 @@
-# pylint: disable=undefined-variable
+# pylint: disable=undefined-variable, missing-docstring
 
-def one():
-    result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]
+
+def fcn_to_fail():
+    result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]  # complex-list-comp
     return result
 
 
-def two():
+def one_to_pass():  # should be fine
     result = []
     for first in range(10):
         for second in range(5):
             result.append((first, second))
     return result
 
-def three():
+
+def two_to_pass():
     for first in xrange(5):
         for second in xrange(5):
             if first != second:
@@ -20,14 +22,17 @@ def three():
                     if second != third:
                         yield (first, second, third)
 
-def four():
+
+def three_to_pass():  # should be fine
     return ((first, complicated_transform(first))
             for first in long_generator_function(parameter)
             if first is not None)
 
-def will_pass2():
+
+def four_to_pass():  # should be fine
     squares = [x * x for x in range(10)]
     return squares
 
-def will_pass3():
+
+def five_to_pass():  # should be fine
     eat(jelly_bean for jelly_bean in jelly_beans if jelly_bean.color == 'black')

@@ -1,1 +1,1 @@
-complex-list-comp:1:one:Multiple generators in list comprehension
+complex-list-comp:4:fcn_to_fail:Multiple generators in list comprehension
