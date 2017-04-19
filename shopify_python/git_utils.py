@@ -120,8 +120,7 @@ class _CustomPylintReporter(text.ColorizedTextReporter):
 def pylint_files(files, **kwargs):
     # type: (typing.List[str], **str) -> typing.Iterable[utils.Message]
     kwargs['reports'] = 'n'
-    pylint_args = ["--{}={}".format(key, value)
-                   for key, value in kwargs.items()]
+    pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
 
     reporter = _CustomPylintReporter()
     lint.Run(files + pylint_args, exit=False, reporter=reporter)

@@ -29,8 +29,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
                   "help code reviewers understand why a linter rule was disabled for a line of code."),
     }
 
-    RE_PYLINT_DISABLE = re.compile(
-        r'^#[ \t]*pylint:[ \t]*(disable|enable)[ \t]*=(?P<messages>[a-zA-Z0-9\-_, \t]+)$')
+    RE_PYLINT_DISABLE = re.compile(r'^#[ \t]*pylint:[ \t]*(disable|enable)[ \t]*=(?P<messages>[a-zA-Z0-9\-_, \t]+)$')
     RE_PYLINT_MESSAGE_CODE = re.compile(r'^[A-Z]{1,2}[0-9]{4}$')
 
     def process_tokens(self, tokens):
@@ -41,8 +40,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
 
                 def get_name(code):
                     try:
-                        return self.linter.msgs_store.get_msg_display_string(
-                            code)
+                        return self.linter.msgs_store.get_msg_display_string(code)
                     except pylint.utils.UnknownMessage:
                         return 'unknown'
 
