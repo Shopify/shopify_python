@@ -40,6 +40,7 @@ csv.register_dialect('test', test_dialect)
 class NoFileError(Exception):
     pass
 
+
 # Notes:
 # - for the purpose of this test, the confidence levels HIGH and UNDEFINED
 #   are treated as the same.
@@ -312,9 +313,6 @@ class LintModuleTest(object):
 
         expected_messages, expected_text = self._get_expected()
         received_messages, received_text = self._get_received()
-
-        print self._get_expected()
-        print self._get_received()
 
         if expected_messages != received_messages:
             msg = ['Wrong results for file "%s":' % (self._test_file.base)]
