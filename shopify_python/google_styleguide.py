@@ -77,7 +77,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'complex-list-comp',
                   "Complicated list comprehensions or generator expressions can be hard to read; "
                   "don't use multiple 'for' keywords"),
-        'C6013': ('Use Conditional Expressions for one-liners, For example: x = 1 if cond else 2.',
+        'C6013': ('Use Conditional Expressions for one-liners, for example: x = 1 if cond else 2.',
                   'cond-expr',
                   "Conditional expressions are mechanisms that provide a shorter syntax for if statements. "
                   "For example: x = 1 if cond else 2. "
