@@ -142,7 +142,9 @@ class FunctionalTestFile(object):
     @property
     def module(self):
         package = os.path.basename(self._directory)
+        print "package" + package
         return '.'.join(['tests', package, self.base])
+        # return 'tests.functional.cond_expr'
 
     @property
     def expected_output(self):
@@ -228,6 +230,10 @@ class LintModuleTest(object):
     maxDiff = None
 
     def __init__(self, test_file):
+        # sys.path.insert(0, '/Users/jimmyzidanguo/src/github.com/Shopify/shopify_python/tests/shopify_python')
+        #print sys.path
+        #sys.path.pop(0)
+    # sys.path.insert(0, '/Users/jimmyzidanguo/src/github.com/Shopify/shopify_python/tests/shopify_python')
         test_reporter = FunctionalTestReporter()
         self._linter = lint.PyLinter()
         from shopify_python import google_styleguide
@@ -243,7 +249,7 @@ class LintModuleTest(object):
             self._linter.load_config_file()
         except NoFileError:
             pass
-
+      #  sys.path.pop(0)
         self._test_file = test_file
 
     def setUp(self):
@@ -309,7 +315,14 @@ class LintModuleTest(object):
         return received_msgs, received_output_lines
 
     def _runTest(self):
+       # import pdb;pdb.set_trace()
+        #sys.path.insert(0, 'tests/shopify_python')
+
+     #   sys.path.insert(0, '/Users/jimmyzidanguo/src/github.com/Shopify/shopify_python/tests/functional')
         self._linter.check([self._test_file.module])
+     #   sys.path.pop(0)
+
+    #sys.path.pop(0)
 
         expected_messages, expected_text = self._get_expected()
         received_messages, received_text = self._get_received()
