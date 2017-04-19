@@ -1,8 +1,8 @@
-# pylint: disable=invalid-name,undefined-variable,bare-except
+# pylint: disable=invalid-name,undefined-variable,missing-docstring
 
 try:  # should be fine
     pass
-except:
+except Error as error:
     pass
 
 try:  # [try-too-long]
@@ -13,5 +13,5 @@ try:  # [try-too-long]
     for i in range(0, 50):
         y = y*x*i
     LogThisValue(y/x)
-except:
+except Error as error:
     pass

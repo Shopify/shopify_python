@@ -80,24 +80,21 @@ def test_detects_changed_python_files(main_repo, python_file, python_script):
     main_repo.index.add([python_file, python_script])
     main_repo.index.commit("adding python files")
 
-    changed_files = git_utils.changed_python_files_in_tree(
-        main_repo.working_dir)
+    changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
     assert sorted(changed_files) == [
         os.path.basename(python_script),
         os.path.basename(python_file),
     ]
 
 
-def test_doesnt_include_changed_nonpython_files(
-        main_repo, python_file, non_python_file):
+def test_doesnt_include_changed_nonpython_files(main_repo, python_file, non_python_file):
     # type: (repo.Repo, str, str) -> None
 
     main_repo.create_head('foo').checkout()
     main_repo.index.add([python_file, non_python_file])
     main_repo.index.commit("adding mixed files")
 
-    changed_files = git_utils.changed_python_files_in_tree(
-        main_repo.working_dir)
+    changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
     assert changed_files == [os.path.basename(python_file)]
 
 
@@ -129,8 +126,7 @@ def test_only_include_modified_locally(main_repo, python_file):
     # Checkout 'foo' branch, add, modify, and commit files
     main_repo.branches['foo'].checkout()
     assert main_repo.active_branch.name == 'foo'
-    modified_file_path = os.path.join(
-        main_repo.working_dir, 'modified_file.py')
+    modified_file_path = os.path.join(main_repo.working_dir, 'modified_file.py')
     with open(modified_file_path, 'a') as modified_file:
         modified_file.writelines("new line here")
     main_repo.index.add([python_file, modified_file_path])
@@ -145,9 +141,7 @@ def test_only_include_modified_locally(main_repo, python_file):
 
     # only the one new file is added
     expected = ['modified_file.py', 'program.py']
-    assert sorted(
-        git_utils.changed_python_files_in_tree(
-            main_repo.working_dir)) == expected
+    assert sorted(git_utils.changed_python_files_in_tree(main_repo.working_dir)) == expected
 
 
 def test_cant_find_remote_origin(main_repo, remote_repo):
@@ -203,23 +197,18 @@ def test_include_modified_files(main_repo, python_file):
 
     main_repo.index.add([python_file])
     main_repo.index.commit("modifying python file")
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [
-        os.path.basename(python_file)]
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 
 def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
-    assert os.path.exists(
-        os.path.join(
-            main_repo.working_dir,
-            os.path.basename(python_file)))
+    assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.add([python_file])
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == []
     main_repo.index.commit("adding python file")
-    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [
-        os.path.basename(python_file)]
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 
 def test_dont_include_scripts_with_extensions(main_repo):
@@ -303,8 +292,7 @@ def test_linter_with_config(tmpdir):
         "def my_function():    \n"
         "  return 1\n"
     )
-    python_files = [tmpdir.join(filename)
-                    for filename in ['file1.py', 'file2.py']]
+    python_files = [tmpdir.join(filename) for filename in ['file1.py', 'file2.py']]
     for path in python_files:
         path.write(file_text)
 
@@ -319,8 +307,7 @@ def test_linter_with_config(tmpdir):
         'ignore': os.path.basename(str(python_files[0])),
         'msg-template': msg_template,
     }
-    lint_results = [x for x in git_utils.pylint_files(
-        [str(tmpdir)], **options)]
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], **options)]
 
     assert len(lint_results) == 1
     assert lint_results[0].path == python_files[1]
@@ -338,6 +325,5 @@ def test_passing_linter(tmpdir):
     )
     tmpdir.join('file.py').write(file_text)
 
-    lint_results = [x for x in git_utils.pylint_files(
-        [str(tmpdir)], reports='n')]
+    lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], reports='n')]
     assert lint_results == []

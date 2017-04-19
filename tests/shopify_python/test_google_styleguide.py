@@ -16,8 +16,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
     def assert_adds_code_messages(self, codes, *messages):
         """Asserts that the checker received the list of messages, including only messages with the given codes."""
         yield
-        got = [message for message in self.linter.release_messages() if message[
-            0] in codes]
+        got = [message for message in self.linter.release_messages() if message[0] in codes]
         msg = ('Expected messages did not match actual.\n'
                'Expected:\n%s\nGot:\n%s' % ('\n'.join(repr(m) for m in messages),
                                             '\n'.join(repr(m) for m in got)))
@@ -41,11 +40,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
             'other_nonexistent_package.nonexistent_module',
         ]
         with self.assertAddsMessages(*[
-            pylint.testutils.Message(
-                'import-modules-only',
-                node=node,
-                args={
-                    'child': child})
+            pylint.testutils.Message('import-modules-only', node=node, args={'child': child})
             for node, child in zip(import_nodes, tried_to_import)
         ]):
             self.walk(root)
@@ -68,21 +63,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
         with self.assert_adds_code_messages(
             ['import-full-path'],
-            pylint.testutils.Message(
-                'import-full-path',
-                node=root.body[0],
-                args={
-                    'module': '.string'}),
-            pylint.testutils.Message(
-                'import-full-path',
-                node=root.body[1],
-                args={
-                    'module': '.string'}),
-            pylint.testutils.Message(
-                'import-full-path',
-                node=root.body[1],
-                args={
-                    'module': '.os'}),
+            pylint.testutils.Message('import-full-path', node=root.body[0], args={'module': '.string'}),
+            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.string'}),
+            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.os'}),
         ):
             self.walk(root)
 
@@ -108,8 +91,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         ):
             self.walk(root)
 
-    @pytest.mark.skipif(sys.version_info >= (
-        3, 0), reason="Tests code that is Python 3 incompatible")
+    @pytest.mark.skipif(sys.version_info >= (3, 0), reason="Tests code that is Python 3 incompatible")
     def test_using_archaic_raise_fails(self):
         root = astroid.builder.parse("""
         raise MyException, 'Error message'
@@ -120,8 +102,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertAddsMessages(message):
             self.walk(root)
 
-    @pytest.mark.skipif(sys.version_info < (
-        3, 0), reason="Tests code that is Python 2 incompatible")
+    @pytest.mark.skipif(sys.version_info < (3, 0), reason="Tests code that is Python 2 incompatible")
     def test_using_reraise_passes(self):
         root = astroid.builder.parse("""
         try:
@@ -172,21 +153,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         try_finally = root.body[0]
         try_except = try_finally.body[0]
         with self.assertAddsMessages(
-            pylint.testutils.Message(
-                'finally-too-long',
-                node=try_finally,
-                args={
-                    'found': 24}),
-            pylint.testutils.Message(
-                'try-too-long',
-                node=try_except,
-                args={
-                    'found': 28}),
-            pylint.testutils.Message(
-                'except-too-long',
-                node=try_except.handlers[0],
-                args={
-                    'found': 39}),
+            pylint.testutils.Message('finally-too-long', node=try_finally, args={'found': 24}),
+            pylint.testutils.Message('try-too-long', node=try_except, args={'found': 28}),
+            pylint.testutils.Message('except-too-long', node=try_except.handlers[0], args={'found': 39}),
         ):
             self.walk(root)
 
@@ -214,11 +183,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
         fnc = root.body[0]
         bad_list_comp = fnc.body[1].value
-        message = pylint.testutils.Message(
-            'use-simple-lambdas',
-            node=bad_list_comp,
-            args={
-                'found': 24})
+        message = pylint.testutils.Message('use-simple-lambdas', node=bad_list_comp, args={'found': 24})
         with self.assertAddsMessages(message):
             self.walk(root)
 
@@ -230,8 +195,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         """)
         fnc = root.body[0]
         bad_list_comp = fnc.body[1].value
-        message = pylint.testutils.Message(
-            'complex-list-comp', node=bad_list_comp)
+        message = pylint.testutils.Message('complex-list-comp', node=bad_list_comp)
         with self.assertAddsMessages(message):
             self.walk(root)
 

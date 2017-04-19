@@ -47,8 +47,7 @@ def revision_file_contents():
 
 
 @pytest.fixture
-def package_root_with_revision_file(
-        package_source_root, revision_file_contents):
+def package_root_with_revision_file(package_source_root, revision_file_contents):
     # type: ('py.path.LocalPath', str) -> 'py.path.LocalPath'
     package_source_root.join('REVISION').write(revision_file_contents)
     return package_source_root
@@ -104,8 +103,7 @@ def test_git_package(develop_mode, git_package_root):
 
 
 @pytest.mark.parametrize('develop_mode', [True, False])
-def test_with_revision_file(
-        develop_mode, package_root_with_revision_file, revision_file_contents):
+def test_with_revision_file(develop_mode, package_root_with_revision_file, revision_file_contents):
     # type: (bool, 'py.path.LocalPath', str) -> None
     with package_installed(package_root_with_revision_file, develop_mode=develop_mode):
         assert revision_file_contents == call_get_package_revision()

@@ -1,8 +1,8 @@
-# pylint: disable=bare-except,undefined-variable,invalid-name
+# pylint: disable=undefined-variable,invalid-name,missing-docstring
 
 try:  # [finally-too-long]
     letsRunThisFunction()
-except:
+except Error as error:
     pass
 finally:
     x = "this time"

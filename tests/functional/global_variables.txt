@@ -1,0 +1,1 @@
+global-variable:3::my_int declared at the module level (i.e. global)

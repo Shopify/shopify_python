@@ -47,12 +47,7 @@ class TestShopifyStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
         # Test
         with self.assertAddsMessages(*[
-            pylint.testutils.Message(
-                'disable-name-only',
-                line=line,
-                args={
-                    'code': code,
-                    'name': 'mocked'})
+            pylint.testutils.Message('disable-name-only', line=line, args={'code': code, 'name': 'mocked'})
             for line, code in expected_line_msgcodes
         ]):
             self.checker.process_tokens(tokens)
