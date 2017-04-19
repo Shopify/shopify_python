@@ -1,0 +1,1 @@
+complex-list-comp:5:fcn_to_fail:Multiple generators in list comprehension
