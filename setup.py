@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 "Shopify inc." All rights reserved.
-# Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
+# Use of this source code is governed by a MIT-style license that can be
+# found in the LICENSE file.
 import re
 
 try:
@@ -12,7 +13,10 @@ except ImportError:
 def get_version():
     version = None
     with open('shopify_python/__init__.py', 'r') as fdesc:
-        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fdesc.read(), re.MULTILINE).group(1)
+        version = re.search(
+            r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+            fdesc.read(),
+            re.MULTILINE).group(1)
     if not version:
         raise RuntimeError('Cannot find version information')
     return version

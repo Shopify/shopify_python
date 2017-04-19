@@ -5,10 +5,6 @@
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
 
 """Functional full-module tests for PyLint."""
-
-# pylint: disable=invalid-name,too-few-public-methods,abstract-method,attribute-defined-outside-init,undefined-variable
-# pylint: disable=cond-expr,no-self-use,too-few-public-methods,use-simple-lambdas,protected-access,redefined-builtin
-
 import csv
 import collections
 import io
@@ -44,16 +40,20 @@ csv.register_dialect('test', test_dialect)
 class NoFileError(Exception):
     pass
 
-
 # Notes:
 # - for the purpose of this test, the confidence levels HIGH and UNDEFINED
 #   are treated as the same.
+
+# TODOs
+#  - implement exhaustivity tests
 
 # If message files should be updated instead of checked.
 UPDATE = False
 
 
-class OutputLine(collections.namedtuple('OutputLine', ['symbol', 'lineno', 'object', 'msg', 'confidence'])):
+class OutputLine(collections.namedtuple('OutputLine',
+                                        ['symbol', 'lineno', 'object', 'msg', 'confidence'])):
+
     @classmethod
     def from_msg(cls, msg):
         return cls(
@@ -91,6 +91,7 @@ def parse_python_version(str):
 
 
 class FunctionalTestReporter(reporters.BaseReporter):
+
     def handle_message(self, msg):
         self.messages.append(msg)
 
@@ -118,7 +119,7 @@ class FunctionalTestFile(object):
             'max_pyver': (4, 0),
             'requires': [],
             'except_implementations': [],
-            }
+        }
         self._parse_options()
 
     def _parse_options(self):
@@ -140,7 +141,7 @@ class FunctionalTestFile(object):
     @property
     def module(self):
         package = os.path.basename(self._directory)
-        return '.'.join([package, self.base])
+        return '.'.join(['tests', package, self.base])
 
     @property
     def expected_output(self):
@@ -228,6 +229,10 @@ class LintModuleTest(object):
     def __init__(self, test_file):
         test_reporter = FunctionalTestReporter()
         self._linter = lint.PyLinter()
+        from shopify_python import google_styleguide
+        from shopify_python import shopify_styleguide
+        google_styleguide.register_checkers(self._linter)
+        shopify_styleguide.register_checkers(self._linter)
         self._linter.set_reporter(test_reporter)
         self._linter.config.persistent = 0
         checkers.initialize(self._linter)
@@ -237,11 +242,14 @@ class LintModuleTest(object):
             self._linter.load_config_file()
         except NoFileError:
             pass
+
         self._test_file = test_file
 
     def setUp(self):
         if self._should_be_skipped_due_to_version():
-            pytest.skip('Test cannot run with Python %s.' % (sys.version.split(' ')[0],))
+            pytest.skip(
+                'Test cannot run with Python %s.' %
+                (sys.version.split(' ')[0],))
         missing = []
         for req in self._test_file.options['requires']:
             try:
@@ -305,6 +313,9 @@ class LintModuleTest(object):
         expected_messages, expected_text = self._get_expected()
         received_messages, received_text = self._get_received()
 
+        print self._get_expected()
+        print self._get_received()
+
         if expected_messages != received_messages:
             msg = ['Wrong results for file "%s":' % (self._test_file.base)]
             missing, unexpected = multiset_difference(expected_messages,
@@ -316,7 +327,10 @@ class LintModuleTest(object):
                 msg.append('\nUnexpected in testdata:')
                 msg.extend(' %3d: %s' % msg for msg in sorted(unexpected))
             pytest.fail('\n'.join(msg))
-        self._check_output_text(expected_messages, expected_text, received_text)
+        self._check_output_text(
+            expected_messages,
+            expected_text,
+            received_text)
 
     def _split_lines(self, expected_messages, lines):
         emitted, omitted = [], []
@@ -334,6 +348,7 @@ class LintModuleTest(object):
 
 
 class LintModuleOutputUpdate(LintModuleTest):
+
     def _open_expected_file(self):
         try:
             return super(LintModuleOutputUpdate, self)._open_expected_file()
@@ -344,7 +359,8 @@ class LintModuleOutputUpdate(LintModuleTest):
                            received_lines):
         if not expected_messages:
             return
-        emitted, remaining = self._split_lines(expected_messages, expected_lines)
+        emitted, remaining = self._split_lines(
+            expected_messages, expected_lines)
         if emitted != received_lines:
             remaining.extend(received_lines)
             remaining.sort(key=lambda m: (m[1], m[0], m[3]))
@@ -370,7 +386,8 @@ TESTS_NAMES = [t.base for t in TESTS]
 
 @pytest.mark.parametrize("test_file", TESTS, ids=TESTS_NAMES)
 def test_functional(test_file):
-    LintTest = LintModuleOutputUpdate(test_file) if UPDATE else LintModuleTest(test_file)
+    LintTest = LintModuleOutputUpdate(
+        test_file) if UPDATE else LintModuleTest(test_file)
     LintTest.setUp()
     LintTest._runTest()
 

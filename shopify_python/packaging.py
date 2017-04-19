@@ -13,11 +13,13 @@ def get_package_revision(package_name):
     the package's Egg metadata. Returns an empty string if the package is not installed or does not contain revision
     information.
     """
-    egg_info = pkg_resources.working_set.find(pkg_resources.Requirement.parse(package_name))
+    egg_info = pkg_resources.working_set.find(
+        pkg_resources.Requirement.parse(package_name))
     if egg_info is None:
         return ''
     if os.path.exists(os.path.join(egg_info.location, '.git')):
-        return str(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=egg_info.location).decode()).strip()
+        return str(subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=egg_info.location).decode()).strip()
     if egg_info.has_metadata('git_sha.txt'):
         return egg_info.get_metadata('git_sha.txt')
 
@@ -51,7 +53,8 @@ def write_package_revision(cmd, _, filename):
     """
     git_sha = None
     if os.path.exists('.git'):
-        git_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
+        git_sha = subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD']).decode().strip()
     elif os.path.exists('REVISION'):
         with open('REVISION') as revision_file:
             git_sha = revision_file.read().strip()

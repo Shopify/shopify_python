@@ -2,7 +2,7 @@
 
 
 def fcn_to_fail():
-    result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]  # complex-list-comp
+    result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]  # [complex-list-comp]
     return result
 
 
