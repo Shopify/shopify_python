@@ -1,8 +1,13 @@
 # Copyright (c) 2014 Google, Inc.
 # Copyright (c) 2014-2016 Claudiu Popa <pcmanticore@gmail.com>
+# Copyright (c) 2017 "Shopify inc." All rights reserved.
 
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/PyCQA/pylint/blob/master/COPYING
+
+# pylint: disable=fixme,import-modules-only,invalid-name,too-few-public-methods,redefined-builtin
+# pylint: disable=cond-expr,no-self-use,use-simple-lambdas,protected-access,abstract-method,
+# pylint: disable=attribute-defined-outside-init,redefined-variable-type
 
 """Functional full-module tests for PyLint."""
 import csv
@@ -24,8 +29,8 @@ from pylint import interfaces
 from pylint import lint
 from pylint import reporters
 
-from shopify_python import google_styleguide
-from shopify_python import shopify_styleguide
+from tests.shopify_python import google_styleguide
+from tests.shopify_python import shopify_styleguide
 
 
 class test_dialect(csv.excel):

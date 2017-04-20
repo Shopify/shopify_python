@@ -5,7 +5,7 @@ if xeo > 5:  # [cond-expr]
 else:
     xeo = 6
 
-if xeo > 5:
+if xeo > 5:  # should be fine
     xeo = 5
 else:
     beo = 6
