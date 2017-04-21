@@ -1,0 +1,1 @@
+use-simple-lambdas:4:<lambda>:Lambda has 24 nodes

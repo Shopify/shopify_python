@@ -83,7 +83,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "For example: x = 1 if cond else 2. "
                   "Conditional Expressions okay to use for one-liners. "
                   "In other cases prefer to use a complete if statement. "),
-        'C6014': ('Prefer operator module function %(op)s to lambda function %(lambda_fun)s',
+        'C6014': ('Prefer operator module function %(op)s to lambda function "%(lambda_fun)s"',
                   'lambda-func',
                   "For common operations like multiplication, use the functions from the operator module"
                   "instead of lambda functions. For example, prefer operator.mul to lambda x, y: x * y."),

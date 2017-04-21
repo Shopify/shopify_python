@@ -1,0 +1,1 @@
+two-arg-exception:6::Raised two-argument exception
