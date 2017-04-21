@@ -1,8 +1,8 @@
 # pylint: disable=undefined-variable,invalid-name,missing-docstring
 
-try:  # [except-too-long]
+try:
     letsRunThisFunction()
-except Error as error:
+except Error as error:  # [except-too-long]
     x = "this time"
     y = "next time"
     for i in range(0, 50):
