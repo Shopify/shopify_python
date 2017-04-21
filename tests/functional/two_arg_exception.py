@@ -1,4 +1,4 @@
-# pylint: disable=unreachable,undefined-variable,missing-docstring,deprecated-exception
+# pylint: disable=unreachable,undefined-variable,missing-docstring
 
 raise 'This is the error message'
 raise Exception('this is the error message')
