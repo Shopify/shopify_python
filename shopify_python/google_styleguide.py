@@ -83,6 +83,10 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "For example: x = 1 if cond else 2. "
                   "Conditional Expressions okay to use for one-liners. "
                   "In other cases prefer to use a complete if statement. "),
+        'C6014': ('Prefer operator module function %(op)s to lambda function %(lambda_fun)s',
+                  'lambda-func',
+                  "For common operations like multiplication, use the functions from the operator module"
+                  "instead of lambda functions. For example, prefer operator.mul to lambda x, y: x * y."),
     }
 
     options = (
@@ -108,6 +112,28 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             'help': 'Number of AST nodes permitted in a lambda'}),
     )
 
+    UNARY_OPERATORS = {
+        "~": "invert",
+        "-": "neg",
+        "not": "not_",
+        "+": "pos"
+    }
+
+    BINARY_OPERATORS = {
+        "+": "add",
+        "-": "sub",
+        "*": "mul",
+        "/": "truediv",
+        "**": "pow",
+        "%": "modulo",
+        "<": "lt",
+        "<=": "le",
+        "==": "eq",
+        "!=": "ne",
+        ">=": "ge",
+        ">": "gt"
+    }
+
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
@@ -116,6 +142,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_lambda(self, node):  # type: (astroid.Lambda) -> None
         self.__use_simple_lambdas(node)
+        self.__lambda_func(node)
 
     def visit_listcomp(self, node):  # type: (astroid.ListComp) -> None
         self.__use_simple_list_comp(node)
@@ -253,3 +280,25 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                 else_body_name = node.orelse[0].targets[0].name
                 if if_body_name == else_body_name:
                     self.add_message('cond-expr', node=node)
+
+    def __lambda_func(self, node):  # type: (astroid.Lambda) -> None
+        """Prefer Operator Function to Lambda Functions"""
+
+        if isinstance(node.body, astroid.UnaryOp):
+            operator = self.UNARY_OPERATORS[node.body.op]
+            argname = node.args.args[0].name
+            if operator and not isinstance(node.body.operand, astroid.BinOp) and argname is node.body.operand.name:
+                varname = node.body.operand.name
+                lambda_fun = "lambda " + varname + ": " + node.body.op + " " + varname
+                op_fun = "operator." + operator
+                self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
+        elif isinstance(node.body, astroid.BinOp):
+            if shopify_python.ast.count_tree_size(node.body) == 3 and len(node.args.args) == 2:
+                node = node.body
+                operator = self.BINARY_OPERATORS[node.op]
+                if operator:
+                    left = str(node.left.value) if node.left.name == 'int' else node.left.name
+                    right = str(node.right.value) if node.right.name == 'int' else node.right.name
+                    lambda_fun = "lambda " + left + ', ' + right + ": " + " ".join([left, node.op, right])
+                    op_fun = "operator." + operator
+                    self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
