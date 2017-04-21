@@ -10,6 +10,7 @@ class Integers(object):
     four = 4
     five = 5
 
+
 module_var, other_module_var = 10  # [global-variable, global-variable]
 
 another_module_var = 1  # [global-variable]
@@ -23,6 +24,7 @@ _OTHER_CONSTANT = sum(x)
 Point = namedtuple('Point', ['x', 'y'])
 
 _Point = namedtuple('_Point', ['x', 'y'])
+
 
 class MyClass(object):
     class_var = 10
