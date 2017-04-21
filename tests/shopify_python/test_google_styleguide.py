@@ -235,8 +235,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
         ulam_fail = unary_root.body[0].body[1].value.args[0]
         unary_message = pylint.testutils.Message('lambda-func', node=ulam_fail, args={
-            'op': 'operator.neg',
-            'lambda_fun': 'lambda x: - x'
+            'op': 'operator.neg'
             })
         with self.assertAddsMessages(unary_message):
             self.walk(unary_root)
@@ -251,8 +250,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
         binary_fail = binary_root.body[0].body[2].value.args[0]
         bin_message = pylint.testutils.Message('lambda-func', node=binary_fail.body, args={
-            'op': 'operator.mul',
-            'lambda_fun': 'lambda x, y: x * y'
+            'op': 'operator.mul'
         })
         with self.assertAddsMessages(bin_message):
             self.walk(binary_root)

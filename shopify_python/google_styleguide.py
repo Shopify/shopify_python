@@ -83,7 +83,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   "For example: x = 1 if cond else 2. "
                   "Conditional Expressions okay to use for one-liners. "
                   "In other cases prefer to use a complete if statement. "),
-        'C6014': ('Prefer operator module function %(op)s to lambda function %(lambda_fun)s',
+        'C6014': ('Prefer operator module function %(op)s to lambda function',
                   'lambda-func',
                   "For common operations like multiplication, use the functions from the operator module"
                   "instead of lambda functions. For example, prefer operator.mul to lambda x, y: x * y."),
@@ -289,16 +289,12 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
             argname = node.args.args[0].name
             if operator and not isinstance(node.body.operand, astroid.BinOp) and argname is node.body.operand.name:
                 varname = node.body.operand.name
-                lambda_fun = "lambda " + varname + ": " + node.body.op + " " + varname
                 op_fun = "operator." + operator
-                self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
+                self.add_message('lambda-func', node=node, args={'op': op_fun})
         elif isinstance(node.body, astroid.BinOp):
             if shopify_python.ast.count_tree_size(node.body) == 3 and len(node.args.args) == 2:
                 node = node.body
                 operator = self.BINARY_OPERATORS[node.op]
                 if operator:
-                    left = str(node.left.value) if node.left.name == 'int' else node.left.name
-                    right = str(node.right.value) if node.right.name == 'int' else node.right.name
-                    lambda_fun = "lambda " + left + ', ' + right + ": " + " ".join([left, node.op, right])
                     op_fun = "operator." + operator
-                    self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
+                    self.add_message('lambda-func', node=node, args={'op': op_fun})
