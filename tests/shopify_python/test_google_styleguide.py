@@ -91,6 +91,24 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         ):
             self.walk(root)
 
+    def test_global_var_namedtuple(self):
+        root = astroid.builder.parse("""
+        import collections
+        Point = collections.namedtuple('Point', ['x', 'y'])
+        TaskStateSerialization = typing.Dict[str, typing.Any]
+        """)
+        with self.assertNoMessages():
+            self.walk(root)
+
+    @pytest.mark.skipif(sys.version_info < (3, 0), reason="Tests code that is Python 2 incompatible")
+    def test_global_var_typing_passes(self):
+        root = astroid.builder.parse("""
+        import typing
+        TaskStateSerialization = typing.Dict[str, typing.Any]
+        """)
+        with self.assertNoMessages():
+            self.walk(root)
+
     @pytest.mark.skipif(sys.version_info >= (3, 0), reason="Tests code that is Python 3 incompatible")
     def test_using_archaic_raise_fails(self):
         root = astroid.builder.parse("""

@@ -218,6 +218,19 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         # Is this an assignment happening within a module? If so report on each assignment name
         # whether its in a tuple or not
         if isinstance(node.parent, astroid.Module):
+
+            # Is this an allowable assignment
+            fnc_node = None
+            if isinstance(node.value, astroid.Call):
+                fnc_node = node.value.func
+            elif isinstance(node.value, astroid.Subscript):
+                fnc_node = node.value.value
+            if fnc_node and '{module}.{function}'.format(
+                    module=fnc_node.expr.name,
+                    function=fnc_node.attrname) in ('collections.namedtuple', 'typing.Dict'):
+                return
+
+            # Report on each assignment name
             for target in node.targets:
                 if hasattr(target, 'elts'):
                     for elt in target.elts:
