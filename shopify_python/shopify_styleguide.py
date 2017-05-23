@@ -41,7 +41,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
                 def get_name(code):
                     try:
                         return self.linter.msgs_store.get_msg_display_string(code)
-                    except pylint.utils.UnknownMessage:
+                    except pylint.utils.UnknownMessageError:
                         return 'unknown'
 
                 matches = self.RE_PYLINT_DISABLE.match(string)

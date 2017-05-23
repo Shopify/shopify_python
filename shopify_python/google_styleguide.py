@@ -185,8 +185,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                 args = {'child': child_module}
                 try:
                     parent.import_module(child_module)
-                except astroid.exceptions.AstroidBuildingException as building_exception:
-                    if str(building_exception).startswith('Unable to load module'):
+                except astroid.exceptions.AstroidImportError as building_exception:
+                    if str(building_exception).startswith('Failed to import module'):
                         self.add_message('import-modules-only', node=node, args=args)
                     else:
                         raise
