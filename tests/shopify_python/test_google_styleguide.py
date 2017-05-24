@@ -20,7 +20,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         msg = ('Expected messages did not match actual.\n'
                'Expected:\n%s\nGot:\n%s' % ('\n'.join(repr(m) for m in messages),
                                             '\n'.join(repr(m) for m in got)))
-        self.assertEqual(list(messages), got, msg)
+        assert list(messages) == got, msg
 
     def test_importing_function_fails(self):
         root = astroid.builder.parse("""
