@@ -21,6 +21,7 @@ exceptions:
 -  Base Class Inheritance
 	- If a class or nested class inherits from no other base classes, explicitly inherit from object.
 	- This won't be enforced for our pure Python 3 code, but we will enforce for Python 2 and 2/3 compatbile code.
+- Variable/module-name collisions: Variable names may be suffixed with an underscore to avoid collisions with imported modules (an extension of the [PEP-8 convention](https://www.python.org/dev/peps/pep-0008/#descriptive-naming-styles) for collisions with builtins).
 
 
 ## Versioning
