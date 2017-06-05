@@ -267,7 +267,10 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         ('x == y', 'eq'),
         ('x != y', 'ne'),
         ('x >= y', 'ge'),
-        ('x > y', 'gt')
+        ('x > y', 'gt'),
+        ('x & y', 'and_'),
+        ('x | y', 'or_'),
+        ('x ^ y', 'xor'),
     ])
     def test_binary_lambda_func(self, test_case):
         (expression, op_name) = test_case
@@ -286,7 +289,8 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
     @pytest.mark.parametrize('expression', [
         'map(lambda x: x + 3, [1, 2, 3, 4])',
-        'reduce(lambda x, y, z: x * y + z, [1, 2, 3])'
+        'reduce(lambda x, y, z: x * y + z, [1, 2, 3])',
+        'reduce(lambda x, y: x in y, [1, 2, 3])'
     ])
     def test_allowed_binary_operation(self, expression):
         binary_root = astroid.builder.parse("""
