@@ -302,3 +302,13 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                     lambda_fun = "lambda " + left + ', ' + right + ": " + " ".join([left, node.op, right])
                     op_fun = "operator." + operator
                     self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
+        elif isinstance(node.body, astroid.Compare):
+            if shopify_python.ast.count_tree_size(node.body) == 3 and len(node.args.args) == 2:
+                node = node.body
+                operator = self.BINARY_OPERATORS[node.ops[0][0]]
+                if operator:
+                    left = str(node.left.value) if node.left.name == 'int' else node.left.name
+                    right = node.ops[0][1].name
+                    lambda_fun = "lambda " + left + ', ' + right + ": " + " ".join([left, node.ops[0][0], right])
+                    op_fun = "operator." + operator
+                    self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})

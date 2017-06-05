@@ -226,33 +226,72 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertNoMessages():
             self.walk(root_not_msg)
 
-    def test_unary_lambda_func(self):
+    def test_unary_lambda_func_with_complex_operand_allowed(self):
         unary_root = astroid.builder.parse("""
         def unaryfnc():
             unary_pass = map(lambda x: not (x+3), [1, 2, 3, 4])
-            unary_fail = map(lambda x: -x, [1, 2, 3, 4])
         """)
+        with self.assertNoMessages():
+            self.walk(unary_root)
 
-        ulam_fail = unary_root.body[0].body[1].value.args[0]
+    @pytest.mark.parametrize('test_case', [
+        ('- x', 'neg'),
+        ('~ x', 'invert'),
+        ('not x', 'not_'),
+        ('+ x', 'pos')
+    ])
+    def test_unary_lambda_func(self, test_case):
+        (expression, op_name) = test_case
+        unary_root = astroid.builder.parse("""
+        def unaryfnc():
+            unary_fail = map(lambda x: {}, [1, 2, 3, 4])
+        """.format(expression))
+
+        ulam_fail = unary_root.body[0].body[0].value.args[0]
         unary_message = pylint.testutils.Message('lambda-func', node=ulam_fail, args={
-            'op': 'operator.neg',
-            'lambda_fun': 'lambda x: - x'
+            'op': 'operator.{}'.format(op_name),
+            'lambda_fun': 'lambda x: {}'.format(expression)
             })
         with self.assertAddsMessages(unary_message):
             self.walk(unary_root)
 
-    def test_binary_lambda_func(self):
+    @pytest.mark.parametrize('test_case', [
+        ('x + y', 'add'),
+        ('x - y', 'sub'),
+        ('x * y', 'mul'),
+        ('x / y', 'truediv'),
+        ('x ** y', 'pow'),
+        ('x % y', 'modulo'),
+        ('x < y', 'lt'),
+        ('x <= y', 'le'),
+        ('x == y', 'eq'),
+        ('x != y', 'ne'),
+        ('x >= y', 'ge'),
+        ('x > y', 'gt')
+    ])
+    def test_binary_lambda_func(self, test_case):
+        (expression, op_name) = test_case
         binary_root = astroid.builder.parse("""
         def binaryfnc():
-            binary_pass = reduce(lambda x, y, z: x * y + z, [1, 2, 3])
-            binary_pass2 = map(lambda x: x + 3, [1, 2, 3, 4])
-            binary_fail = reduce(lambda x, y: x * y, [1, 2, 3, 4])
-        """)
+            binary_fail = reduce(lambda x, y: {}, [1, 2, 3, 4])
+        """.format(expression))
 
-        binary_fail = binary_root.body[0].body[2].value.args[0]
-        bin_message = pylint.testutils.Message('lambda-func', node=binary_fail.body, args={
-            'op': 'operator.mul',
-            'lambda_fun': 'lambda x, y: x * y'
-        })
-        with self.assertAddsMessages(bin_message):
+        binary_fail = binary_root.body[0].body[0].value.args[0]
+        binary_message = pylint.testutils.Message('lambda-func', node=binary_fail.body, args={
+            'op': 'operator.{}'.format(op_name),
+            'lambda_fun': 'lambda x, y: {}'.format(expression)
+            })
+        with self.assertAddsMessages(binary_message):
+            self.walk(binary_root)
+
+    @pytest.mark.parametrize('expression', [
+        'map(lambda x: x + 3, [1, 2, 3, 4])',
+        'reduce(lambda x, y, z: x * y + z, [1, 2, 3])'
+    ])
+    def test_allowed_binary_operation(self, expression):
+        binary_root = astroid.builder.parse("""
+        def binaryfnc():
+            binary_pass = {}
+        """.format(expression))
+        with self.assertNoMessages():
             self.walk(binary_root)
