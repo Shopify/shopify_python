@@ -382,6 +382,13 @@ TESTS = get_tests()
 TESTS_NAMES = [t.base for t in TESTS]
 
 
+def test_a_functional_test_exists_for_all_rule_names():
+    tests = set(TESTS_NAMES)
+    for rule_name in google_styleguide.GoogleStyleGuideChecker.msgs.values():
+        test_name = rule_name[1].replace('-', '_')
+        assert (test_name in tests) or ({test_name + '2', test_name + '3'}.issubset(tests))
+
+
 @pytest.mark.parametrize("test_file", TESTS, ids=TESTS_NAMES)
 def test_functional(test_file):
     LintTest = LintModuleOutputUpdate(test_file) if UPDATE else LintModuleTest(test_file)
