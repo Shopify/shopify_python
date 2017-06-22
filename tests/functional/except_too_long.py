@@ -11,7 +11,7 @@ except Error as error:  # [except-too-long]
         y += x
     GetToThisFunc(x, y)
 
-try:  # should be fine
+try:
     runThisFcnAgain()
 finally:
     runNextFcn()

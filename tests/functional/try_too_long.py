@@ -1,6 +1,6 @@
 # pylint: disable=invalid-name,undefined-variable,missing-docstring
 
-try:  # should be fine
+try:
     pass
 except Error as error:
     pass

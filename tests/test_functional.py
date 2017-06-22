@@ -386,7 +386,10 @@ def test_a_functional_test_exists_for_all_rule_names():
     tests = set(TESTS_NAMES)
     for rule_name in google_styleguide.GoogleStyleGuideChecker.msgs.values():
         test_name = rule_name[1].replace('-', '_')
-        assert (test_name in tests) or ({test_name + '2', test_name + '3'}.issubset(tests))
+        assert (test_name in tests) or ({test_name + '2', test_name + '3'}.issubset(tests)), \
+            """rule `{}` is missing a functional test.
+Please add a functional test of this rule (ex. `{}.py` with expected lint errors `{}.rc`) to `tests/functional/`.
+""".format(rule_name, test_name)
 
 
 @pytest.mark.parametrize("test_file", TESTS, ids=TESTS_NAMES)

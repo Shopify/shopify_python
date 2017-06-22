@@ -13,7 +13,7 @@ finally:
         y += x
     GetToThisFunc(x, y)
 
-try:  # should be fine
+try:
     runThisFcnAgain()
 finally:
     runNextFcn()
