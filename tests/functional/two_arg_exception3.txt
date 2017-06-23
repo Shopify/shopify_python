@@ -1,0 +1,1 @@
+syntax-error:5::invalid syntax (<string>, line 5)

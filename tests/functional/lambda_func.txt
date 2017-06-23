@@ -1,0 +1,4 @@
+lambda-func:5:<lambda>:Prefer operator module function operator.neg to lambda function
+lambda-func:10:foo1.<lambda>:Prefer operator module function operator.pos to lambda function
+lambda-func:17:<lambda>:Prefer operator module function operator.add to lambda function
+lambda-func:22:foo3.<lambda>:Prefer operator module function operator.add to lambda function
