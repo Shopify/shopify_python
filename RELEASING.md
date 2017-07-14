@@ -13,12 +13,12 @@ To release a new version of [`shopify_python`](https://pypi.python.org/pypi/shop
         testpypi
 
     [testpypi]
-    repository = https://testpypi.python.org/pypi
+    repository = https://test.pypi.org/legacy/
     username = <your user name goes here>
     password = <your password goes here>
 
     [pypi]
-    repository = https://pypi.python.org/pypi
+    repository = https://upload.pypi.org/legacy/
     username = <your user name goes here>
     password = <your password goes here>
     ```
