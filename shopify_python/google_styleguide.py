@@ -131,7 +131,8 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         "==": "eq",
         "!=": "ne",
         ">=": "ge",
-        ">": "gt"
+        ">": "gt",
+        "is": "is"
     }
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
