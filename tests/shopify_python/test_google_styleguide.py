@@ -274,7 +274,8 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         ('x == y', 'eq'),
         ('x != y', 'ne'),
         ('x >= y', 'ge'),
-        ('x > y', 'gt')
+        ('x > y', 'gt'),
+        ('x is y', 'is')
     ])
     def test_binary_lambda_func(self, test_case):
         (expression, op_name) = test_case
