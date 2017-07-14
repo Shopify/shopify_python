@@ -51,10 +51,10 @@ setuplib.setup(
             'pytest==3.0.6',
             'pytest-randomly==1.1.2',
         ],
-        'devpy2: python_version < "3.3"': [
+        'dev: python_version < "3.3"': [
             'mock==2.0.0',
         ],
-        'devpy3: python_version >= "3.3"': [
+        'dev: python_version >= "3.3"': [
             'mypy==0.501',
         ]
     }

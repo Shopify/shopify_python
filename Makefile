@@ -31,7 +31,7 @@ run_tests: clean
 test: autopep8 run_tests lint
 
 install:
-	pip install -e .[dev,devpy2,devpy3]
+	pip install -e .[dev]
 
 release:
 	rm -rf build dist
