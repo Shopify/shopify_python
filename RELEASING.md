@@ -23,10 +23,10 @@ To release a new version of [`shopify_python`](https://pypi.python.org/pypi/shop
     password = <your password goes here>
     ```
 
-4. Create a PR to increment [`__version__`](https://github.com/Shopify/shopify_python/blob/release/shopify_python/__init__.py#L10) according to our [versioning standards](https://github.com/Shopify/shopify_python#versioning) that lists the features associated with this release (e.g. [this release PR](https://github.com/Shopify/shopify_python/pull/38))
+4. Create a PR to increment [`__version__`](https://github.com/Shopify/shopify_python/blob/e2aa5dd3cd3156c14b11f03645588563e2a74967/shopify_python/__init__.py#L10) according to our [versioning standards](https://github.com/Shopify/shopify_python#versioning) that lists the features associated with this release (e.g. [this release PR](https://github.com/Shopify/shopify_python/pull/38))
     - Note that this PR does not necessarily need to be merged to `master` but should be code reviewed
     - Also note that a release does not have to be crafted from current `master` but could branch off and cherry pick specific features to release
-5. Optionally run `python setup.py register -r https://testpypi.python.org/pypi` if the project has been deleted on Test PyPI
+5. Optionally run `python setup.py register -r https://test.pypi.org/legacy/` if the project has been deleted on Test PyPI
 6. Run `make release` to build the release files locally
 7. Run `make upload_test` to upload the release to Test PyPI
 8. Test that the release works by running `pip install -i https://testpypi.python.org/pypi shopify_python` in a fresh virtualenv and make sure that:
