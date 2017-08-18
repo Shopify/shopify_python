@@ -295,7 +295,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """Prefer Operator Function to Lambda Functions"""
 
         if isinstance(node.body, astroid.UnaryOp):
-            operator = self.UNARY_OPERATORS[node.body.op]
+            operator = self.UNARY_OPERATORS.get(node.body.op)
             argname = node.args.args[0].name
             if operator and hasattr(node.body.operand, 'name') and argname == node.body.operand.name:
                 varname = node.body.operand.name
@@ -305,7 +305,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         elif isinstance(node.body, astroid.BinOp):
             if shopify_python.ast.count_tree_size(node.body) == 3 and len(node.args.args) == 2:
                 node = node.body
-                operator = self.BINARY_OPERATORS[node.op]
+                operator = self.BINARY_OPERATORS.get(node.op)
                 if operator:
                     left = str(node.left.value) if node.left.name == 'int' else node.left.name
                     right = str(node.right.value) if node.right.name == 'int' else node.right.name
@@ -315,7 +315,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         elif isinstance(node.body, astroid.Compare):
             if shopify_python.ast.count_tree_size(node.body) == 3 and len(node.args.args) == 2:
                 node = node.body
-                operator = self.BINARY_OPERATORS[node.ops[0][0]]
+                operator = self.BINARY_OPERATORS.get(node.ops[0][0])
                 if operator:
                     left = str(node.left.value) if node.left.name == 'int' else node.left.name
                     right = node.ops[0][1].name
