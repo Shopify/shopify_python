@@ -121,18 +121,26 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     BINARY_OPERATORS = {
         "+": "add",
-        "-": "sub",
-        "*": "mul",
+        "in": "contains",
         "/": "truediv",
+        "//": "floordiv",
+        "&": "and_",
+        "^": "xor",
+        "|": "or_",
         "**": "pow",
+        "is": "is",
+        "is not": "is_not",
+        "<<": "lshift",
         "%": "modulo",
+        "*": "mul",
+        ">>": "rshift",
+        "-": "sub",
         "<": "lt",
         "<=": "le",
         "==": "eq",
         "!=": "ne",
         ">=": "ge",
-        ">": "gt",
-        "is": "is"
+        ">": "gt"
     }
 
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
