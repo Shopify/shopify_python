@@ -297,7 +297,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         if isinstance(node.body, astroid.UnaryOp):
             operator = self.UNARY_OPERATORS[node.body.op]
             argname = node.args.args[0].name
-            if operator and not isinstance(node.body.operand, astroid.BinOp) and argname is node.body.operand.name:
+            if operator and hasattr(node.body.operand, 'name') and argname == node.body.operand.name:
                 varname = node.body.operand.name
                 lambda_fun = "lambda " + varname + ": " + node.body.op + " " + varname
                 op_fun = "operator." + operator
