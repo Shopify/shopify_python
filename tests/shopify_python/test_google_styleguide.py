@@ -241,6 +241,35 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
         with self.assertNoMessages():
             self.walk(unary_root)
 
+    def test_unary_lambda_func_without_operand_name_allowed(self):
+        unary_root = astroid.builder.parse("""
+        def unaryfnc():
+            unary_pass = map(lambda x: not x.attribute, [1, 2, 3, 4])
+        """)
+        with self.assertNoMessages():
+            self.walk(unary_root)
+
+    def test_unary_lambda_func_with_unknown_operator_allowed(self, monkeypatch):
+        monkeypatch.setattr(google_styleguide.GoogleStyleGuideChecker, 'UNARY_OPERATORS', dict())
+        unary_root = astroid.builder.parse("""
+        def unaryfnc():
+            unary_pass = map(lambda x: not x, [1, 2, 3, 4])
+        """)
+        with self.assertNoMessages():
+            self.walk(unary_root)
+
+    @pytest.mark.parametrize('operator', [
+        '+', '<'
+    ])
+    def test_binary_lambda_func_with_unknown_operator_allowed(self, operator, monkeypatch):
+        monkeypatch.setattr(google_styleguide.GoogleStyleGuideChecker, 'BINARY_OPERATORS', dict())
+        unary_root = astroid.builder.parse("""
+        def unaryfnc():
+            binary_pass = map(lambda x, y: x %s y, [(1, 2), (3, 4)])
+        """ % operator)
+        with self.assertNoMessages():
+            self.walk(unary_root)
+
     @pytest.mark.parametrize('test_case', [
         ('- x', 'neg'),
         ('~ x', 'invert'),
