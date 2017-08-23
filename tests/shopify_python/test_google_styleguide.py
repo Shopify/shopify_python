@@ -8,7 +8,7 @@ import pytest
 from shopify_python import google_styleguide
 
 
-class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):
+class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: disable=too-many-public-methods
 
     CHECKER_CLASS = google_styleguide.GoogleStyleGuideChecker
 
