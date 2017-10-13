@@ -340,7 +340,7 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
                     return content.withColumn('zero', F.lit(0.0))
             """)
         with self.assertAddsMessages(
-                *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0])]
+            *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0])]
         ):
             self.walk(root)
 
