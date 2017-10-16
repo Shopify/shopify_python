@@ -1,0 +1,1 @@
+blank-line-after-class-required:2:SomeClass:No blank line after a class definition

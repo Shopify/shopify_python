@@ -87,6 +87,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                   'lambda-func',
                   "For common operations like multiplication, use the functions from the operator module"
                   "instead of lambda functions. For example, prefer operator.mul to lambda x, y: x * y."),
+        'C6015': ('No blank line after a class definition',
+                  'blank-line-after-class-required',
+                  'Missing a blank line after a class definition'),
     }
 
     options = (
@@ -172,6 +175,9 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def visit_if(self, node):
         self.__use_cond_expr(node)  # type: (astroid.If) -> None
+
+    def visit_classdef(self, node):  # type: (astroid.ClassDef) -> None
+        self.__class_def_check(node)
 
     @staticmethod
     def __get_module_names(node):  # type: (astroid.ImportFrom) -> typing.Generator[str, None, None]
@@ -322,3 +328,17 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
                     lambda_fun = "lambda " + left + ', ' + right + ": " + " ".join([left, node.ops[0][0], right])
                     op_fun = "operator." + operator
                     self.add_message('lambda-func', node=node, args={'op': op_fun, 'lambda_fun': lambda_fun})
+
+    def __class_def_check(self, node):  # type: (astroid.ClassDef) -> None
+        """Enforce a blank line after a class definition line."""
+        prev_line = node.lineno
+
+        for element in node.body:
+            curr_line = element.lineno
+            blank_lines = curr_line - prev_line - 1
+            if isinstance(element, astroid.FunctionDef) and blank_lines < 1:
+                self.add_message('blank-line-after-class-required', node=node)
+                break
+            elif isinstance(element, astroid.FunctionDef):
+                break
+            prev_line = curr_line
