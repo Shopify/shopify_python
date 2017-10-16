@@ -331,11 +331,14 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
 
     def __class_def_check(self, node):  # type: (astroid.ClassDef) -> None
         """Enforce a blank line after a class definition line."""
-        if isinstance(node, astroid.ClassDef):
-            class_def_line = node.lineno
-            for next_def in node.body:
-                if isinstance(next_def, astroid.FunctionDef):
-                    next_line = next_def.lineno
-                    if next_line - class_def_line < 2:
-                        self.add_message('blank-line-after-class-required', node=node)
-                    break
+        prev_line = node.lineno
+
+        for element in node.body:
+            curr_line = element.lineno
+            blank_lines = curr_line - prev_line - 1
+            if isinstance(element, astroid.FunctionDef) and blank_lines < 1:
+                self.add_message('blank-line-after-class-required', node=node)
+                break
+            elif isinstance(element, astroid.FunctionDef):
+                break
+            prev_line = curr_line

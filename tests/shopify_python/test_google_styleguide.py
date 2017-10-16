@@ -338,9 +338,23 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
             class SomePipeline(object):
                 def apply(content):
                     return content.withColumn('zero', F.lit(0.0))
+
+            class Fact(object):
+                INPUTS = {}
+                def apply(self):
+                    pass
+
+            class Stage(object):
+                INPUTS = {}
+
+                OUTPUTS = {}
+                def apply(self):
+                    pass
             """)
         with self.assertAddsMessages(
-            *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0])]
+            *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0]),
+              pylint.testutils.Message('blank-line-after-class-required', node=root.body[1]),
+              pylint.testutils.Message('blank-line-after-class-required', node=root.body[2])]
         ):
             self.walk(root)
 
@@ -357,6 +371,10 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
             class SecondStage(object):
                 INPUTS = {}
                 OUTPUTS = {}
+
+                def check():
+                    pass
+
                 def apply():
                     pass
             """))
