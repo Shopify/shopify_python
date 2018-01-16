@@ -41,6 +41,7 @@ setuplib.setup(
     install_requires=[
         'GitPython>=2.1.8,<3',
         'pylint>=1.7.1,<1.8',
+        'astroid>=1.5,<1.6',
         'six>=1.10.0,<2',
         'typing>=3.5.3.0,<4',
         'autopep8>=1.2.2,<2',
