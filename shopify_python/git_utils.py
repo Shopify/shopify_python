@@ -78,6 +78,7 @@ _AutopepOptions = typing.NamedTuple('_AutopepOptions', [  # pylint: disable=glob
     ('recursive', bool),
     ('select', typing.Set[str]),
     ('verbose', int),
+    ('hang_closing', bool),
 ])
 
 
@@ -100,7 +101,8 @@ def autopep_files(files, max_line_length):
                               pep8_passes=-1,
                               recursive=False,
                               select={'W', 'E'},
-                              verbose=0)
+                              verbose=0,
+                              hang_closing=False)
     autopep8.fix_multiple_files(files, options, sys.stdout)
 
 
