@@ -44,7 +44,7 @@ setuplib.setup(
         'astroid>=1.5,<1.6',
         'six>=1.10.0,<2',
         'typing>=3.5.3.0,<4',
-        'autopep8>=1.2.2,<2',
+        'autopep8>=1.3.4,<2',
     ],
     extras_require={
         'dev': [
