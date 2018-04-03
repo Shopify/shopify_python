@@ -2,6 +2,18 @@
 
 Contributions are always welcome, both reporting issues and submitting pull requests!
 
+### Setup
+
+Follow these steps to run the shopify_python tests:
+
+```bash
+pyenv local 3.6.1 # or whatever version you want to work with
+virtualenv ENV
+make install 
+make run_tests
+```
+If all went well, you should see a number of successful tests.
+
 ### Reporting issues
 
 Please make sure to include any potentially useful information in the issue, so we can pinpoint the issue faster without going back and forth.
