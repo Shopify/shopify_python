@@ -32,22 +32,33 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     RE_PYLINT_DISABLE = re.compile(r'^#[ \t]*pylint:[ \t]*(disable|enable)[ \t]*=(?P<messages>[a-zA-Z0-9\-_, \t]+)$')
     RE_PYLINT_MESSAGE_CODE = re.compile(r'^[A-Z]{1,2}[0-9]{4}$')
 
+
     def process_tokens(self, tokens):
         # type: (typing.Sequence[typing.Tuple]) -> None
-        for _type, string, start, _, _ in tokens:
+        for _type, string, start, end, _ in tokens:
             start_row, _ = start
             if _type == tokenize.COMMENT:
+                self.__validate_comment(string, start, end)
 
-                def get_name(code):
-                    try:
-                        return self.linter.msgs_store.get_msg_display_string(code)
-                    except pylint.utils.UnknownMessageError:
-                        return 'unknown'
+    def __validate_comment(self, string, start, end):
+        # type: (str, typing.Tuple[int, int], typing.Tuple[int, int]) -> None
+        self.__disable_name_only(string, start)
 
-                matches = self.RE_PYLINT_DISABLE.match(string)
-                if matches:
-                    for msg in matches.group('messages').split(','):
-                        msg = msg.strip()
-                        if self.RE_PYLINT_MESSAGE_CODE.match(msg):
-                            self.add_message('disable-name-only', line=start_row,
-                                             args={'code': msg, 'name': get_name(msg)})
+    def __disable_name_only(self, string, start):
+        # type: (str, typing.Tuple[int, int]) -> None
+        start_row, _ = start
+
+        def get_name(code):
+            try:
+                return self.linter.msgs_store.get_msg_display_string(code)
+            except pylint.utils.UnknownMessageError:
+                return 'unknown'
+
+        matches = self.RE_PYLINT_DISABLE.match(string)
+        if matches:
+            for msg in matches.group('messages').split(','):
+                msg = msg.strip()
+                if self.RE_PYLINT_MESSAGE_CODE.match(msg):
+                    self.add_message('disable-name-only', line=start_row,
+                                     args={'code': msg, 'name': get_name(msg)})
+
