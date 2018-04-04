@@ -1,4 +1,4 @@
-# pylint:disable=missing-docstring,unused-import,unused-argument
+# pylint:disable=missing-docstring,unused-import
 import typing
 
 
@@ -9,7 +9,7 @@ def one_param(seq):
 
 def multiple_params(message, seq, index):
     # type: (string, typing.Sequence[str], int) -> str # [sequence-of-string]
-    return seq[index]
+    return message + seq[index]
 
 def return_type(message_1, message_2):
     # type: (str, str) -> typing.Sequence[str] # [sequence-of-string]
