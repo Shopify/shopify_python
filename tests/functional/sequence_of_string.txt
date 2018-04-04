@@ -1,0 +1,1 @@
+sequence-of-string:6::Forbidden use of typing.Sequence[str], use typing.List[str] instead

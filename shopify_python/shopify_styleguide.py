@@ -27,27 +27,32 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
                   'disable-name-only',
                   "Disable pylint rules via message name (e.g. unused-import) and not message code (e.g. W0611) to "
                   "help code reviewers understand why a linter rule was disabled for a line of code."),
+        'C6102': ('Forbidden use of typing.Sequence[str], use typing.List[str] instead',
+                  'sequence-of-string',
+                  'Since str itself also satisfies typing.Sequence[str], the latter should be replaced by '
+                  'a more specific iterable type, such as typing.List[str]')
     }
 
     RE_PYLINT_DISABLE = re.compile(r'^#[ \t]*pylint:[ \t]*(disable|enable)[ \t]*=(?P<messages>[a-zA-Z0-9\-_, \t]+)$')
     RE_PYLINT_MESSAGE_CODE = re.compile(r'^[A-Z]{1,2}[0-9]{4}$')
 
+    RE_SEQUENCE_STRING = re.compile(r'^#.*type:.*Sequence\[str\].*$')
 
     def process_tokens(self, tokens):
         # type: (typing.Sequence[typing.Tuple]) -> None
-        for _type, string, start, end, _ in tokens:
+        for _type, string, start, _, _ in tokens:
             start_row, _ = start
             if _type == tokenize.COMMENT:
-                self.__validate_comment(string, start, end)
+                self.__validate_comment(string, start)
 
-    def __validate_comment(self, string, start, end):
-        # type: (str, typing.Tuple[int, int], typing.Tuple[int, int]) -> None
+    def __validate_comment(self, string, start):
+        # type: (str, typing.Tuple[int, int]) -> None
         self.__disable_name_only(string, start)
+        self.__sequence_str(string, start)
 
     def __disable_name_only(self, string, start):
         # type: (str, typing.Tuple[int, int]) -> None
         start_row, _ = start
-
         def get_name(code):
             try:
                 return self.linter.msgs_store.get_msg_display_string(code)
@@ -62,3 +67,9 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
                     self.add_message('disable-name-only', line=start_row,
                                      args={'code': msg, 'name': get_name(msg)})
 
+    def __sequence_str(self, string, start):
+        # type: (str, typing.Tuple[int, int]) -> None
+        start_row, _ = start
+        if self.RE_SEQUENCE_STRING.match(string):
+            self.add_message('sequence-of-string', line=start_row,
+                             args={'code': 'foobar', 'name': 'baz'})
