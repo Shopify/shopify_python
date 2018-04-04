@@ -41,7 +41,6 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     def process_tokens(self, tokens):
         # type: (typing.Sequence[typing.Tuple]) -> None
         for _type, string, start, _, _ in tokens:
-            start_row, _ = start
             if _type == tokenize.COMMENT:
                 self.__validate_comment(string, start)
 
@@ -53,6 +52,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     def __disable_name_only(self, string, start):
         # type: (str, typing.Tuple[int, int]) -> None
         start_row, _ = start
+
         def get_name(code):
             try:
                 return self.linter.msgs_store.get_msg_display_string(code)
