@@ -22,7 +22,7 @@ def _remote_origin_master(git_repo):
 
 
 def _modified_in_branch(git_repo, other_ref):
-    # type: (repo.Repo, head.Head) -> typing.Sequence[str]
+    # type: (repo.Repo, head.Head) -> typing.List[str]
     common_commit = git_repo.merge_base(git_repo.active_branch, other_ref)[0]
     diffs = common_commit.diff(git_repo.active_branch.commit)
     changed_files = []
