@@ -1,7 +1,6 @@
 import re
 import tokenize
 import typing  # pylint: disable=unused-import
-import astroid  # pylint: disable=unused-import
 
 import pylint.utils
 
@@ -28,7 +27,7 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
                   'disable-name-only',
                   "Disable pylint rules via message name (e.g. unused-import) and not message code (e.g. W0611) to "
                   "help code reviewers understand why a linter rule was disabled for a line of code."),
-        'C6102': ('Forbidden use of typing.Sequence[str], use typing.List[str] instead',
+        'C6102': ('Forbidden use of typing.Sequence[str], use typing.List[str] or some specific collection instead',
                   'sequence-of-string',
                   'Since str itself also satisfies typing.Sequence[str], the latter should be replaced by '
                   'a more specific iterable type, such as typing.List[str]')
