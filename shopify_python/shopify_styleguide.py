@@ -1,6 +1,7 @@
 import re
 import tokenize
 import typing  # pylint: disable=unused-import
+import astroid  # pylint: disable=unused-import
 
 import pylint.utils
 
@@ -36,18 +37,27 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
     RE_PYLINT_DISABLE = re.compile(r'^#[ \t]*pylint:[ \t]*(disable|enable)[ \t]*=(?P<messages>[a-zA-Z0-9\-_, \t]+)$')
     RE_PYLINT_MESSAGE_CODE = re.compile(r'^[A-Z]{1,2}[0-9]{4}$')
 
-    RE_SEQUENCE_STRING = re.compile(r'^#.*type:.*Sequence\[str\].*$')
+    RE_COMMENT_TYPE_ANNOTATION = re.compile(r'^# type.*:.*$')
+    RE_SEQUENCE_STRING = re.compile(r'^.*Sequence\[str\].*$')
 
     def process_tokens(self, tokens):
         # type: (typing.Sequence[typing.Tuple]) -> None
-        for _type, string, start, _, _ in tokens:
-            if _type == tokenize.COMMENT:
+        for _type, string, start, _, line in tokens:
+            if _type == tokenize.NAME:
+                self.__validate_name(string, start, line)
+            elif _type == tokenize.COMMENT:
                 self.__validate_comment(string, start)
 
     def __validate_comment(self, string, start):
         # type: (str, typing.Tuple[int, int]) -> None
         self.__disable_name_only(string, start)
-        self.__sequence_str(string, start)
+        if self.RE_COMMENT_TYPE_ANNOTATION.match(string):
+            self.__sequence_str(string, start)
+
+    def __validate_name(self, string, start, line):
+        # type: (str, typing.Tuple[int, int], str) -> None
+        if string == 'Sequence' and 'Sequence[str]' in line:
+            self.__sequence_str(line, start)
 
     def __disable_name_only(self, string, start):
         # type: (str, typing.Tuple[int, int]) -> None
@@ -71,5 +81,4 @@ class ShopifyStyleGuideChecker(checkers.BaseTokenChecker):
         # type: (str, typing.Tuple[int, int]) -> None
         start_row, _ = start
         if self.RE_SEQUENCE_STRING.match(string):
-            self.add_message('sequence-of-string', line=start_row,
-                             args={'code': 'foobar', 'name': 'baz'})
+            self.add_message('sequence-of-string', line=start_row)

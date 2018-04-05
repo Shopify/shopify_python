@@ -15,5 +15,5 @@ def multiple_params(
 
 
 def return_type(message_1: str, message_2: str
-                ) -> typing.Sequence[str]:      # [sequence-of-string]
+               ) -> typing.Sequence[str]:      # [sequence-of-string]
     return [message_1, message_2]
