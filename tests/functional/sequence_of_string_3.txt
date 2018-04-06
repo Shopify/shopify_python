@@ -1,0 +1,4 @@
+sequence-of-string:5::Forbidden use of typing.Sequence[str], use typing.List[str] or some specific collection instead
+sequence-of-string:6::Forbidden use of typing.Sequence[str], use typing.List[str] or some specific collection instead
+sequence-of-string:12::Forbidden use of typing.Sequence[str], use typing.List[str] or some specific collection instead
+sequence-of-string:17::Forbidden use of typing.Sequence[str], use typing.List[str] or some specific collection instead
