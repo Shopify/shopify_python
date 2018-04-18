@@ -1,0 +1,14 @@
+name: shopify-python
+
+type: python
+
+up:
+  - python: 3.6.1
+  - custom:
+      name: "link development shopify-python as a package"
+      met?: "pip show shopify-python | grep \"Location: $(pwd)\" 1>/dev/null"
+      meet: "pip install -e .[dev]"
+commands:
+  lint:
+    desc: "Check for Python style & syntax errors in all Python files"
+    run: pylint --rcfile=pylintrc shopify_python tests setup.py
