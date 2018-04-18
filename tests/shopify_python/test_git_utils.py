@@ -79,8 +79,8 @@ def test_detects_changed_python_files(main_repo, python_file, python_script):
     main_repo.create_head('foo').checkout()
     main_repo.index.add([python_file, python_script])
     main_repo.index.commit("adding python files")
-
     changed_files = git_utils.changed_python_files_in_tree(main_repo.working_dir)
+
     assert sorted(changed_files) == [
         os.path.basename(python_script),
         os.path.basename(python_file),
