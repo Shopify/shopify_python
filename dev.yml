@@ -11,4 +11,8 @@ up:
 commands:
   lint:
     desc: "Check for Python style & syntax errors in all Python files"
-    run: pylint --rcfile=pylintrc shopify_python tests setup.py
+    run: make lint
+  test:
+    desc: "Run all tests"
+    run: make test
+
