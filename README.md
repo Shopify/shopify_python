@@ -20,7 +20,7 @@ exceptions:
 - Multi-line docstrings: The first line of text (summary line) appears on the same line as the opening three double-quotes.
 -  Base Class Inheritance
 	- If a class or nested class inherits from no other base classes, explicitly inherit from object.
-	- This won't be enforced for our pure Python 3 code, but we will enforce for Python 2 and 2/3 compatbile code.
+	- This won't be enforced for our pure Python 3 code, but we will enforce for Python 2 and 2/3 compatible code.
 - Variable/module-name collisions: Variable names may be suffixed with an underscore to avoid collisions with imported modules (an extension of the [PEP-8 convention](https://www.python.org/dev/peps/pep-0008/#descriptive-naming-styles) for collisions with builtins).
 
 
@@ -29,7 +29,7 @@ exceptions:
 Projects that are producing libraries to be used in other projects should choose their release version numbers using [Semantic Versioning 2.0.0](http://semver.org/spec/v2.0.0.html), i.e.
 
 > Given a version number MAJOR.MINOR.PATCH, increment the:
-> 
+>
 > MAJOR version when you make incompatible API changes,
 > MINOR version when you add functionality in a backwards-compatible manner, and
 > PATCH version when you make backwards-compatible bug fixes.
