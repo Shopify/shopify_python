@@ -4,3 +4,8 @@
 .cache
 build/
 dist/
+.python-version
+
+# PyCharm metadata
+.idea
+
