@@ -40,8 +40,8 @@ setuplib.setup(
     test_suite='tests',
     install_requires=[
         'GitPython >= 2.1.8, < 3',
-        'pylint ~= 1.7.1',
-        'astroid ~= 1.5.3',
+        'pylint ~= 1.8.0',
+        'astroid ~= 1.6.0',
         'six ~= 1.10',
         'typing ~= 3.5 ; python_version < "3.5"',  # In Pythin 3.5+ the typing module lives in the stdlib
         'autopep8 ~= 1.3.4',
