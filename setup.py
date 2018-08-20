@@ -42,18 +42,5 @@ setuptools.setup(
         'six>=1.10.0,<2',
         'typing>=3.5.3.0,<4',
         'autopep8>=1.3.4,<2',
-    ],
-    extras_require={
-        'dev': [
-            'pycodestyle==2.3.1',
-            'pytest==3.0.6',
-            'pytest-randomly==1.1.2',
-        ],
-        'dev: python_version < "3.3"': [
-            'mock==2.0.0',
-        ],
-        'dev: python_version >= "3.3"': [
-            'mypy==0.501',
-        ]
-    }
+    ]
 )
