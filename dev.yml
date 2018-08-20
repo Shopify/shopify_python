@@ -14,5 +14,4 @@ commands:
     run: make lint
   test:
     desc: "Run all tests"
-    run: make test
-
+    run: make run_tests
