@@ -31,7 +31,8 @@ run_tests: clean
 test: autopep8 run_tests lint
 
 install:
-	pip install -e .[dev]
+	pip install -e .
+	pip install -r requirements.txt
 
 release:
 	rm -rf build dist
