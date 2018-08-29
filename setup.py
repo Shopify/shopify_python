@@ -3,10 +3,7 @@
 # Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 import re
 
-try:
-    import setuptools as setuplib
-except ImportError:
-    import distutils.core as setuplib
+import setuptools
 
 
 def get_version():
@@ -18,7 +15,7 @@ def get_version():
     return version
 
 
-setuplib.setup(
+setuptools.setup(
     name='shopify_python',
     version=get_version(),
     description='Python Standards Library for Shopify',
@@ -45,18 +42,5 @@ setuplib.setup(
         'six>=1.10.0,<2',
         'typing>=3.5.3.0,<4',
         'autopep8>=1.3.4,<2',
-    ],
-    extras_require={
-        'dev': [
-            'pycodestyle==2.3.1',
-            'pytest==3.0.6',
-            'pytest-randomly==1.1.2',
-        ],
-        'dev: python_version < "3.3"': [
-            'mock==2.0.0',
-        ],
-        'dev: python_version >= "3.3"': [
-            'mypy==0.501',
-        ]
-    }
+    ]
 )

@@ -3,16 +3,14 @@ name: shopify-python
 type: python
 
 up:
-  - python: 3.6.1
-  - custom:
-      name: "link development shopify-python as a package"
-      met?: "pip show shopify-python | grep \"Location: $(pwd)\" 1>/dev/null"
-      meet: "pip install -e .[dev]"
+  - python: 3.6.5
+  - python_develop
+  - pip: [requirements.txt]
+
 commands:
   lint:
     desc: "Check for Python style & syntax errors in all Python files"
     run: make lint
   test:
     desc: "Run all tests"
-    run: make test
-
+    run: make run_tests
