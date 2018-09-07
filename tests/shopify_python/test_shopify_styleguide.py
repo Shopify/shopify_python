@@ -21,7 +21,7 @@ class TestShopifyStyleGuideChecker(pylint.testutils.CheckerTestCase):
         setattr(self.linter, 'msgs_store', mock_msgs_store)
 
         # Create tokens
-        tokens = pylint.testutils.tokenize_str("""
+        tokens = pylint.testutils._tokenize_str("""
         import os  # pylint: disable=unused-import
         import os  # pylint: disable=unused-import,W0611
         import os  # pylint: disable=W0611,C0302,C0303

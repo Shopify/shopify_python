@@ -125,6 +125,6 @@ def pylint_files(files, **kwargs):
     pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
 
     reporter = _CustomPylintReporter()
-    lint.Run(files + pylint_args, exit=False, reporter=reporter)
+    lint.Run(files + pylint_args, do_exit=False, reporter=reporter)
 
     return reporter.raw_messages

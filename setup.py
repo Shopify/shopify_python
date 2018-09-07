@@ -36,11 +36,9 @@ setuptools.setup(
     ],
     test_suite='tests',
     install_requires=[
-        'GitPython >= 2.1.8, < 3',
-        'pylint ~= 1.7.1',
-        'astroid ~= 1.5.3',
-        'six ~= 1.10',
-        'typing ~= 3.5 ; python_version < "3.5"',  # In Python 3.5+ the typing module lives in the stdlib
-        'autopep8 ~= 1.3.4',
+        'GitPython~=2.1.11',
+        'pylint~=2.1.1',
+        'typing~=3.6.6',
+        'autopep8~=1.4',
     ]
 )
