@@ -1,9 +1,13 @@
-# pylint: disable=invalid-name,too-few-public-methods,missing-docstring,unpacking-non-sequence,undefined-variable,useless-object-inheritance
+# pylint: disable=invalid-name,too-few-public-methods,missing-docstring,unpacking-non-sequence,undefined-variable,old-style-class
 
 my_int = 77  # [global-variable]
 
 
-class Integers(object):
+class Integers:
+
+    def __init__(self):
+        pass
+
     one = 1
     two = 2
     three = 3
@@ -26,5 +30,9 @@ Point = namedtuple('Point', ['x', 'y'])
 _Point = namedtuple('_Point', ['x', 'y'])
 
 
-class MyClass(object):
+class MyClass:
+
+    def __init__(self):
+        pass
+
     class_var = 10

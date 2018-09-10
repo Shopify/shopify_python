@@ -1,4 +1,4 @@
 global-variable:3::my_int declared at the module level (i.e. global)
-global-variable:14::module_var declared at the module level (i.e. global)
-global-variable:14::other_module_var declared at the module level (i.e. global)
-global-variable:16::another_module_var declared at the module level (i.e. global)
+global-variable:18::module_var declared at the module level (i.e. global)
+global-variable:18::other_module_var declared at the module level (i.e. global)
+global-variable:20::another_module_var declared at the module level (i.e. global)
