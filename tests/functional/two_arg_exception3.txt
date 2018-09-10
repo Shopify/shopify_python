@@ -1,1 +1,1 @@
-syntax-error:5::invalid syntax (<string>, line 5)
+syntax-error:5::invalid syntax (<unknown>, line 5)

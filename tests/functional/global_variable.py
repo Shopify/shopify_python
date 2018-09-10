@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,too-few-public-methods,missing-docstring,unpacking-non-sequence,undefined-variable
+# pylint: disable=invalid-name,too-few-public-methods,missing-docstring,unpacking-non-sequence,undefined-variable,useless-object-inheritance
 
 my_int = 77  # [global-variable]
 
