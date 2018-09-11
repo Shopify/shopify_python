@@ -2,13 +2,14 @@ import re
 import typing  # pylint: disable=unused-import
 
 import astroid  # pylint: disable=unused-import
-import shopify_python.ast
-import six
 
 from pylint import checkers
 from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
-from pylint import utils
+
+import six
+
+import shopify_python.ast
 
 
 def register_checkers(linter):  # type: (lint.PyLinter) -> None
@@ -146,6 +147,13 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         ">": "gt"
     }
 
+    def __init__(self, linter):
+        super(GoogleStyleGuideChecker, self).__init__(linter)
+        name_checker = checkers.base.NameChecker(linter)
+        (regexps, _) = name_checker._create_naming_rules()  # pylint: disable=protected-access
+        self.__class_regexp = regexps['class']
+        self.__const_regexp = regexps['const']
+
     def visit_assign(self, node):  # type: (astroid.Assign) -> None
         self.__avoid_global_variables(node)
 
@@ -221,11 +229,11 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
         """Avoid global variables."""
 
         def check_assignment(node):
-            if utils.get_global_option(self, 'class-rgx').match(node.name):
+
+            if self.__class_regexp.match(node.name):
                 return  # Type definitions are allowed if they assign to a class name
 
-            if utils.get_global_option(self, 'const-rgx').match(node.name) or \
-               re.match('^__[a-z]+__$', node.name):
+            if self.__const_regexp.match(node.name) or re.match('^__[a-z]+__$', node.name):
                 return  # Constants are allowed
 
             self.add_message('global-variable', node=node, args={'name': node.name})

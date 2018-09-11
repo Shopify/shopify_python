@@ -4,6 +4,7 @@ import typing  # pylint: disable=unused-import
 import autopep8
 from git import repo
 from git.refs import head  # pylint: disable=unused-import
+import pylint
 from pylint import lint
 from pylint import utils  # pylint: disable=unused-import
 from pylint.reporters import text
@@ -36,15 +37,15 @@ def _file_is_python(path):
     # type: (str) -> bool
     if path.endswith('.py'):
         return True
-    else:
-        _, extension = os.path.splitext(path)
-        if not extension:
-            try:
-                with open(path) as might_be_python:
-                    line = might_be_python.readline()
-                    return line.startswith('#!') and 'python' in line
-            except UnicodeDecodeError:
-                pass
+
+    _, extension = os.path.splitext(path)
+    if extension:
+        return False
+    try:
+        with open(path) as might_be_python:
+            line = might_be_python.readline()
+            return line.startswith('#!') and 'python' in line
+    except UnicodeDecodeError:
         return False
 
 
@@ -125,6 +126,10 @@ def pylint_files(files, **kwargs):
     pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
 
     reporter = _CustomPylintReporter()
-    lint.Run(files + pylint_args, exit=False, reporter=reporter)
+    pylint_version = int(pylint.__version__.split('.')[0])
+    if pylint_version < 2:
+        lint.Run(files + pylint_args, exit=False, reporter=reporter)  # pylint: disable=unexpected-keyword-arg
+    else:
+        lint.Run(files + pylint_args, do_exit=False, reporter=reporter)  # pylint: disable=unexpected-keyword-arg
 
     return reporter.raw_messages

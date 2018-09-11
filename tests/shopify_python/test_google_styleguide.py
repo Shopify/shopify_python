@@ -40,8 +40,8 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
             'other_nonexistent_package.nonexistent_module',
         ]
         with self.assertAddsMessages(*[
-            pylint.testutils.Message('import-modules-only', node=node, args={'child': child})
-            for node, child in zip(import_nodes, tried_to_import)
+                pylint.testutils.Message('import-modules-only', node=node, args={'child': child})
+                for node, child in zip(import_nodes, tried_to_import)
         ]):
             self.walk(root)
 
@@ -62,10 +62,10 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
         from .. import string, os
         """)
         with self.assert_adds_code_messages(
-            ['import-full-path'],
-            pylint.testutils.Message('import-full-path', node=root.body[0], args={'module': '.string'}),
-            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.string'}),
-            pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.os'}),
+                ['import-full-path'],
+                pylint.testutils.Message('import-full-path', node=root.body[0], args={'module': '.string'}),
+                pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.string'}),
+                pylint.testutils.Message('import-full-path', node=root.body[1], args={'module': '.os'}),
         ):
             self.walk(root)
 
@@ -82,12 +82,12 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
             class_var = 10
         """)
         with self.assertAddsMessages(
-            pylint.testutils.Message(
-                'global-variable', node=root.body[0].targets[0].elts[0], args={'name': 'module_var'}),
-            pylint.testutils.Message(
-                'global-variable', node=root.body[0].targets[0].elts[1], args={'name': 'other_module_var'}),
-            pylint.testutils.Message(
-                'global-variable', node=root.body[1].targets[0], args={'name': 'another_module_var'}),
+                pylint.testutils.Message(
+                    'global-variable', node=root.body[0].targets[0].elts[0], args={'name': 'module_var'}),
+                pylint.testutils.Message(
+                    'global-variable', node=root.body[0].targets[0].elts[1], args={'name': 'other_module_var'}),
+                pylint.testutils.Message(
+                    'global-variable', node=root.body[1].targets[0], args={'name': 'another_module_var'}),
         ):
             self.walk(root)
 
@@ -160,9 +160,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
         try_finally = root.body[0]
         try_except = try_finally.body[0]
         with self.assertAddsMessages(
-            pylint.testutils.Message('finally-too-long', node=try_finally, args={'found': 24}),
-            pylint.testutils.Message('try-too-long', node=try_except, args={'found': 28}),
-            pylint.testutils.Message('except-too-long', node=try_except.handlers[0], args={'found': 39}),
+                pylint.testutils.Message('finally-too-long', node=try_finally, args={'found': 24}),
+                pylint.testutils.Message('try-too-long', node=try_except, args={'found': 28}),
+                pylint.testutils.Message('except-too-long', node=try_except.handlers[0], args={'found': 39}),
         ):
             self.walk(root)
 
@@ -352,9 +352,9 @@ class TestGoogleStyleGuideChecker(pylint.testutils.CheckerTestCase):  # pylint: 
                     pass
             """)
         with self.assertAddsMessages(
-            *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0]),
-              pylint.testutils.Message('blank-line-after-class-required', node=root.body[1]),
-              pylint.testutils.Message('blank-line-after-class-required', node=root.body[2])]
+                *[pylint.testutils.Message('blank-line-after-class-required', node=root.body[0]),
+                  pylint.testutils.Message('blank-line-after-class-required', node=root.body[1]),
+                  pylint.testutils.Message('blank-line-after-class-required', node=root.body[2])]
         ):
             self.walk(root)
 

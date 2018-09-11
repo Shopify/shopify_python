@@ -1,9 +1,5 @@
+import mock
 import pylint.testutils
-
-try:
-    import unittest.mock as mock  # Python 3.3+
-except ImportError:
-    import mock  # Python < 3.3
 
 from shopify_python import shopify_styleguide
 
@@ -21,7 +17,8 @@ class TestShopifyStyleGuideChecker(pylint.testutils.CheckerTestCase):
         setattr(self.linter, 'msgs_store', mock_msgs_store)
 
         # Create tokens
-        tokens = pylint.testutils.tokenize_str("""
+        tokens = pylint.testutils._tokenize_str(  # pylint: disable=protected-access
+            """
         import os  # pylint: disable=unused-import
         import os  # pylint: disable=unused-import,W0611
         import os  # pylint: disable=W0611,C0302,C0303
@@ -47,8 +44,8 @@ class TestShopifyStyleGuideChecker(pylint.testutils.CheckerTestCase):
 
         # Test
         with self.assertAddsMessages(*[
-            pylint.testutils.Message('disable-name-only', line=line, args={'code': code, 'name': 'mocked'})
-            for line, code in expected_line_msgcodes
+                pylint.testutils.Message('disable-name-only', line=line, args={'code': code, 'name': 'mocked'})
+                for line, code in expected_line_msgcodes
         ]):
             self.checker.process_tokens(tokens)
         mock_msgs_store.get_msg_display_string.assert_has_calls(
