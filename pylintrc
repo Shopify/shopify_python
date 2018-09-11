@@ -36,7 +36,9 @@ load-plugins=shopify_python
 # CHANGED:
 # missing-docstring: docstrings should be optional
 # redefined-outer-name: doesn't play well with pytest fixtures
-disable=missing-docstring,redefined-outer-name
+# bad-continuation: PyLint 2.0 fixes expected indentation of wrapped `with` lines. Disable this rule to avoid triggering
+#     false errors in PyLint 1.9.
+disable=missing-docstring,redefined-outer-name,bad-continuation
 
 
 [REPORTS]

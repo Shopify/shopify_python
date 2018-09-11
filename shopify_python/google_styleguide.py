@@ -2,13 +2,14 @@ import re
 import typing  # pylint: disable=unused-import
 
 import astroid  # pylint: disable=unused-import
-import shopify_python.ast
-import six
 
 from pylint import checkers
 from pylint import interfaces
 from pylint import lint  # pylint: disable=unused-import
-from pylint import utils
+
+import six
+
+import shopify_python.ast
 
 
 def register_checkers(linter):  # type: (lint.PyLinter) -> None
@@ -149,7 +150,7 @@ class GoogleStyleGuideChecker(checkers.BaseChecker):
     def __init__(self, linter):
         super(GoogleStyleGuideChecker, self).__init__(linter)
         name_checker = checkers.base.NameChecker(linter)
-        (regexps, _) = name_checker._create_naming_rules()
+        (regexps, _) = name_checker._create_naming_rules()  # pylint: disable=protected-access
         self.__class_regexp = regexps['class']
         self.__const_regexp = regexps['const']
 
