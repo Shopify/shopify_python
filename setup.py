@@ -25,6 +25,7 @@ setuptools.setup(
     license='MIT',
     packages=['shopify_python'],
     include_package_data=True,
+    package_data={'shopify_python': ['py.typed']},  # PEP-561: typing marker for MyPy
     zip_safe=False,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
