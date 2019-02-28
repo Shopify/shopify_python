@@ -1,6 +1,6 @@
 pycodestyle~=2.4
-pytest==3.0.6
+pytest==3.10.1
 pytest-randomly==1.1.2
 
 mock==2.0.0
-mypy==0.501  ; python_version >= "3.3"
+mypy==0.670  ; python_version >= "3.3"
