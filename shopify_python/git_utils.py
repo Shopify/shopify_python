@@ -51,13 +51,26 @@ def _file_is_python(path):
 
 def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
-
     git_repo = repo.Repo(root_path)
     remote_master = _remote_origin_master(git_repo)
     modified = _modified_in_branch(git_repo, remote_master)
     abs_modified = [os.path.join(git_repo.working_dir, x) for x in modified]
     return [mod for (mod, abs_mod) in zip(modified, abs_modified)
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
+
+
+def uncommitted_python_files(root_path):
+    # type: (str) -> typing.FrozenSet[str]
+    git_repo = repo.Repo(root_path)
+    unstaged_files = [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
+    staged_files = [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
+    return frozenset(unstaged_files + staged_files)
+
+
+def untracked_python_files(root_path):
+    # type: (str) -> typing.List[str]
+    git_repo = repo.Repo(root_path)
+    return [item for item in git_repo.untracked_files if _file_is_python(item)]
 
 
 # Options are defined here: https://pypi.python.org/pypi/autopep8#usage

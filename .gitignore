@@ -2,5 +2,7 @@
 *.egg-info
 .DS_Store
 .cache
+# ignore pycharm config files
+.idea
 build/
 dist/
