@@ -211,6 +211,15 @@ def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 
+def test_committed_files(main_repo, python_file):
+    # type: (repo.Repo, str) -> None
+
+    main_repo.index.add([python_file])
+    #assert git_utils.changed_python_files_in_tree(main_repo.working_dir) != []
+    main_repo.index.commit("adding python file")
+    assert git_utils.changed_python_files_in_tree(main_repo.working_dir) != [os.path.basename(python_file)]
+
+
 def test_dont_include_scripts_with_extensions(main_repo):
     # type: (repo.Repo) -> None
 
