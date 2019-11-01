@@ -1,6 +1,8 @@
 *.py[cod]
 *.egg-info
 .DS_Store
+# ignore pycharm config files
+.idea
 .cache
 build/
 dist/
