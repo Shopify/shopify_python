@@ -60,6 +60,20 @@ def changed_python_files_in_tree(root_path):
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
 
 
+def uncommitted_python_files(root_path):
+    # type: (str) -> typing.FrozenSet[str]
+    git_repo = repo.Repo(root_path)
+    unstaged_files = [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
+    staged_files = [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
+    return frozenset(unstaged_files + staged_files)
+
+
+def untracked_python_files(root_path):
+    # type: (str) -> typing.List[str]
+    git_repo = repo.Repo(root_path)
+    return [item for item in git_repo.untracked_files]
+
+
 # Options are defined here: https://pypi.python.org/pypi/autopep8#usage
 _AutopepOptions = typing.NamedTuple('_AutopepOptions', [  # pylint: disable=global-variable,invalid-name
     ('aggressive', int),
