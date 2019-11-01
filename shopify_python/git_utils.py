@@ -64,10 +64,10 @@ def uncommitted_python_files(root_path):
     git_repo = repo.Repo(root_path)
     unstaged_files = [
         file.a_path for file in git_repo.index.diff(None) if _file_is_python(
-            file.a_path)] #pylint: disable=redefined-builtin
+            file.a_path)]
     staged_files = [
         file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(
-            file.a_path)] #pylint: disable=redefined-builtin
+            file.a_path)]
     return frozenset(unstaged_files + staged_files)
 
 
