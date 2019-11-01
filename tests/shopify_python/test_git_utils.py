@@ -211,7 +211,7 @@ def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 
-def test_uncommitted_files(main_repo, python_file):
+def test_get_uncommitted_python_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
     assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
