@@ -62,14 +62,8 @@ def changed_python_files_in_tree(root_path):
 def uncommitted_python_files(root_path):
     # type: (str) -> typing.FrozenSet[str]
     git_repo = repo.Repo(root_path)
-    unstaged_files = []
-    staged_files = []
-    for file in git_repo.index.diff(None):
-        if _file_is_python(file.a_path):
-            unstaged_files.append(file.a_path)
-    for file in git_repo.index.diff('HEAD'):
-        if _file_is_python(file.a_path):
-            staged_files.append(file.a_path)
+    unstaged_files = [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
+    staged_files = [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
     return frozenset(unstaged_files + staged_files)
 
 
