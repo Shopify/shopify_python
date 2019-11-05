@@ -51,6 +51,7 @@ def _file_is_python(path):
 
 def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
+    """Gets a list of paths of all committed files in a given repository."""
     git_repo = repo.Repo(root_path)
     remote_master = _remote_origin_master(git_repo)
     modified = _modified_in_branch(git_repo, remote_master)
@@ -59,19 +60,39 @@ def changed_python_files_in_tree(root_path):
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
 
 
-def uncommitted_python_files(root_path):
-    # type: (str) -> typing.FrozenSet[str]
+def unstaged_python_files(root_path):
+    # type: (str) -> typing.List[str]
+    """Gets a list of paths of all uncommitted unstaged files in a given repository."""
     git_repo = repo.Repo(root_path)
-    unstaged_files = [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
-    staged_files = [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
-    return frozenset(unstaged_files + staged_files)
+    return [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
+
+
+def staged_python_files(root_path):
+    # type: (str) -> typing.List[str]
+    """Gets a list of paths of all uncommitted staged files in a given repository."""
+    git_repo = repo.Repo(root_path)
+    return [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
 
 
 def untracked_python_files(root_path):
     # type: (str) -> typing.List[str]
+    """Gets a list of paths of all untracked files in a given repository"""
     git_repo = repo.Repo(root_path)
     return [item for item in git_repo.untracked_files if _file_is_python(item)]
 
+
+def changed_local_python_files(root_path):
+    # type: (str) -> typing.FrozenSet[str]
+    """
+    Gets a list of paths of all changed files, including,
+    committed, uncommitted and untracked files in a given repository.
+    """
+    return frozenset(
+        changed_python_files_in_tree(root_path) +
+        unstaged_python_files(root_path) +
+        staged_python_files(root_path) +
+        untracked_python_files(root_path)
+    )
 
 # Options are defined here: https://pypi.python.org/pypi/autopep8#usage
 _AutopepOptions = typing.NamedTuple('_AutopepOptions', [  # pylint: disable=global-variable,invalid-name
