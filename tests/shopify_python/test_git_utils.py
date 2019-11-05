@@ -211,13 +211,32 @@ def test_dont_include_uncommited_or_untracked_files(main_repo, python_file):
     assert git_utils.changed_python_files_in_tree(main_repo.working_dir) == [os.path.basename(python_file)]
 
 
-def test_get_staged_python_files(main_repo, python_file):
+def test_getting_staged_python_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
     assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
     assert git_utils.staged_python_files(main_repo.working_dir) == []
     main_repo.index.add([python_file])
     assert git_utils.staged_python_files(main_repo.working_dir) == ['program.py']
+
+
+def test_getting_unstaged_python_files(main_repo, python_file):
+    # type: (repo.Repo, str) -> None
+
+    py_file = os.path.join(main_repo.working_dir, os.path.basename(python_file))
+    assert git_utils.unstaged_python_files(main_repo.working_dir) == []
+    assert os.path.exists(py_file)
+    main_repo.index.add([python_file])
+    with open(py_file, 'w') as changed_file:
+        changed_file.write(' ')
+    assert git_utils.unstaged_python_files(main_repo.working_dir) == ['program.py']
+
+
+def test_getting_untracked_python_files(main_repo, python_file):
+    # type: (repo.Repo, str) -> None
+
+    assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
+    assert git_utils.untracked_python_files(main_repo.working_dir) == ['program.py']
 
 
 def test_dont_include_scripts_with_extensions(main_repo):
