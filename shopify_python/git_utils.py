@@ -64,19 +64,19 @@ def unstaged_python_files(root_path):
     # type: (str) -> typing.List[str]
     """Gets a list of paths of all uncommitted unstaged files in a given repository."""
     git_repo = repo.Repo(root_path)
-    return [file.a_path for file in git_repo.index.diff(None) if _file_is_python(file.a_path)]
+    return [changed_file.a_path for changed_file in git_repo.index.diff(None) if _file_is_python(changed_file.a_path)]
 
 
 def staged_python_files(root_path):
     # type: (str) -> typing.List[str]
     """Gets a list of paths of all uncommitted staged files in a given repository."""
     git_repo = repo.Repo(root_path)
-    return [file.a_path for file in git_repo.index.diff('HEAD') if _file_is_python(file.a_path)]
+    return [changed_file.a_path for changed_file in git_repo.index.diff('HEAD') if _file_is_python(changed_file.a_path)]
 
 
 def untracked_python_files(root_path):
     # type: (str) -> typing.List[str]
-    """Gets a list of paths of all untracked files in a given repository"""
+    """Gets a list of paths of all untracked files in a given repository."""
     git_repo = repo.Repo(root_path)
     return [item for item in git_repo.untracked_files if _file_is_python(item)]
 
