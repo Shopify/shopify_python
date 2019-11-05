@@ -84,8 +84,9 @@ def untracked_python_files(root_path):
 def changed_local_python_files(root_path):
     # type: (str) -> typing.FrozenSet[str]
     """
-    Gets a list of paths of all changed files, including,
-    committed, uncommitted and untracked files in a given repository.
+    Gets a list of paths of all changed files.
+
+    This includes committed, uncommitted and untracked files in a given repository.
     """
     return frozenset(
         changed_python_files_in_tree(root_path) +
