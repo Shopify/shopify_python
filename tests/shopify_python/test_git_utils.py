@@ -215,9 +215,9 @@ def test_get_staged_python_files(main_repo, python_file):
     # type: (repo.Repo, str) -> None
 
     assert os.path.exists(os.path.join(main_repo.working_dir, os.path.basename(python_file)))
-    assert git_utils.staged_python_files(main_repo.working_dir) == frozenset()
+    assert git_utils.staged_python_files(main_repo.working_dir) == []
     main_repo.index.add([python_file])
-    assert git_utils.staged_python_files(main_repo.working_dir) == frozenset(['program.py'])
+    assert git_utils.staged_python_files(main_repo.working_dir) == ['program.py']
 
 
 def test_dont_include_scripts_with_extensions(main_repo):
