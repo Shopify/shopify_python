@@ -51,7 +51,7 @@ def _file_is_python(path):
 
 def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
-    """Gets a list of paths of all committed files in a given repository."""
+    """Returns the list of all committed files in a given repository."""
     git_repo = repo.Repo(root_path)
     remote_master = _remote_origin_master(git_repo)
     modified = _modified_in_branch(git_repo, remote_master)
@@ -62,21 +62,21 @@ def changed_python_files_in_tree(root_path):
 
 def unstaged_python_files(root_path):
     # type: (str) -> typing.List[str]
-    """Gets a list of paths of all uncommitted unstaged files in a given repository."""
+    """Returns the list of all uncommitted unstaged files in a given repository."""
     git_repo = repo.Repo(root_path)
     return [changed_file.a_path for changed_file in git_repo.index.diff(None) if _file_is_python(changed_file.a_path)]
 
 
 def staged_python_files(root_path):
     # type: (str) -> typing.List[str]
-    """Gets a list of paths of all uncommitted staged files in a given repository."""
+    """Returns the list of all uncommitted staged files in a given repository."""
     git_repo = repo.Repo(root_path)
     return [changed_file.a_path for changed_file in git_repo.index.diff('HEAD') if _file_is_python(changed_file.a_path)]
 
 
 def untracked_python_files(root_path):
     # type: (str) -> typing.List[str]
-    """Gets a list of paths of all untracked files in a given repository."""
+    """Returns the list of all untracked files in a given repository."""
     git_repo = repo.Repo(root_path)
     return [item for item in git_repo.untracked_files if _file_is_python(item)]
 
@@ -84,7 +84,7 @@ def untracked_python_files(root_path):
 def changed_local_python_files(root_path):
     # type: (str) -> typing.FrozenSet[str]
     """
-    Gets a list of paths of all changed files.
+    Returns the list of all changed files.
 
     This includes committed, uncommitted and untracked files in a given repository.
     """
