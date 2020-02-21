@@ -38,7 +38,7 @@ setuptools.setup(
     test_suite='tests',
     install_requires=[
         'GitPython~=2.1.11',
-        'typing~=3.6.6',
+        'typing~=3.6.6 ; python_version<"3.5"',
         'autopep8~=1.4',
     ],
     extras_require={
