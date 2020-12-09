@@ -43,7 +43,7 @@ setuptools.setup(
     ],
     extras_require={
         ':python_version>="3.0"': [
-            'pylint~=2.1.1'
+            'pylint~=2.1'
         ],
         ':python_version<"3.0"': [
             'pylint~=1.9.3'
