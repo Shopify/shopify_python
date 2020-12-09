@@ -37,16 +37,16 @@ setuptools.setup(
     ],
     test_suite='tests',
     install_requires=[
-        'GitPython~=2.1.11',
-        'typing~=3.6.6 ; python_version<"3.5"',
+        'GitPython~=2.1',
+        'typing~=3.6 ; python_version<"3.5"',
         'autopep8~=1.4',
     ],
     extras_require={
         ':python_version>="3.0"': [
-            'pylint~=2.1.1'
+            'pylint~=2.6'
         ],
         ':python_version<"3.0"': [
-            'pylint~=1.9.3'
+            'pylint~=1.9'
         ]
     }
 

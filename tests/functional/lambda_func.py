@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,deprecated-lambda
+# pylint: disable=missing-docstring
 import operator as o
 import functools as f
 

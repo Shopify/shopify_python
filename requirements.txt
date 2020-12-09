@@ -4,4 +4,4 @@ pytest-randomly==1.1.2
 
 mock==2.0.0
 mypy==0.501  ; python_version >= "3.3"
-astroid>=1.6,<=2.0.4
+astroid~=1.6,<=2.0.4
