@@ -40,6 +40,7 @@ setuptools.setup(
         'GitPython~=2.1',
         'typing~=3.6 ; python_version<"3.5"',
         'autopep8~=1.4',
+        'six'
     ],
     extras_require={
         ':python_version>="3.0"': [
