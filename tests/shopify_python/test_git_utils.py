@@ -68,7 +68,7 @@ def main_repo(tmpdir, remote_repo):
     open(str(file_name), 'wb').close()
     new_repo.index.add([str(file_name)])
     new_repo.index.commit("initial commit")
-    new_repo.remote('origin').push('master')
+    new_repo.remote('origin').push('main')
 
     return new_repo
 
@@ -109,18 +109,18 @@ def test_only_include_modified_locally(main_repo, python_file):
         origin = main_repo.remote('origin')
         full_path = os.path.join(main_repo.working_dir, filename)
         open(full_path, 'w').close()
-        remote_master_commit = main_repo.index.commit("adding modified file")
+        remote_main_commit = main_repo.index.commit("adding modified file")
         origin.push()
-        return remote_master_commit
+        return remote_main_commit
 
-    # Add a file and push it to origin/master
+    # Add a file and push it to origin/main
     modified_file_commit = _add_and_commit_file('modified_file.py')
 
-    # Create a new branch from here, but remain on master
+    # Create a new branch from here, but remain on main
     main_repo.create_head('foo')
-    assert main_repo.active_branch.name == 'master'
+    assert main_repo.active_branch.name == 'main'
 
-    # Add another file and push it to origin/master
+    # Add another file and push it to origin/main
     added_file_commit = _add_and_commit_file('added_file.py')
 
     # Checkout 'foo' branch, add, modify, and commit files
@@ -130,14 +130,14 @@ def test_only_include_modified_locally(main_repo, python_file):
     with open(modified_file_path, 'a') as modified_file:
         modified_file.writelines("new line here")
     main_repo.index.add([python_file, modified_file_path])
-    local_master_commit = main_repo.index.commit("adding python file")
+    local_main_commit = main_repo.index.commit("adding python file")
 
-    # current commit should have same parents as remote master (diverged tree)
+    # current commit should have same parents as remote main (diverged tree)
     assert modified_file_commit.parents == [starting_commit]
     assert added_file_commit.parents == [modified_file_commit]
-    assert local_master_commit.parents == [modified_file_commit]
+    assert local_main_commit.parents == [modified_file_commit]
 
-    assert local_master_commit != added_file_commit
+    assert local_main_commit != added_file_commit
 
     # only the one new file is added
     expected = ['modified_file.py', 'program.py']
@@ -151,21 +151,21 @@ def test_cant_find_remote_origin(main_repo, remote_repo):
 
     with pytest.raises(git_utils.GitUtilsException) as ex:
         git_utils.changed_python_files_in_tree(main_repo.working_dir)
-    assert "Unable to locate remote branch origin/master" in ex.exconly()
+    assert "Unable to locate remote branch origin/main" in ex.exconly()
 
 
-def test_cant_find_origin_master(main_repo, remote_repo):
+def test_cant_find_origin_main(main_repo, remote_repo):
     # type: (repo.Repo, repo.Repo) -> None
 
     remote_foo = remote_repo.create_head('foo')
     remote_repo.head.reference = remote_foo
-    remote_repo.delete_head('master')
+    remote_repo.delete_head('main')
 
     main_repo.remotes[0].fetch(prune=True)
 
     with pytest.raises(git_utils.GitUtilsException) as ex:
         git_utils.changed_python_files_in_tree(main_repo.working_dir)
-    assert "Unable to locate remote branch origin/master" in ex.exconly()
+    assert "Unable to locate remote branch origin/main" in ex.exconly()
 
 
 def test_dont_include_deleted_files(main_repo, python_file):
@@ -174,7 +174,7 @@ def test_dont_include_deleted_files(main_repo, python_file):
     origin = main_repo.remote('origin')
     main_repo.index.add([python_file])
     main_repo.index.commit("adding python file")
-    origin.push('master')
+    origin.push('main')
 
     main_repo.create_head('foo').checkout()
     main_repo.index.remove([python_file])

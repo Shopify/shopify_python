@@ -14,12 +14,12 @@ class GitUtilsException(Exception):
     pass
 
 
-def _remote_origin_master(git_repo):
+def _remote_origin_main(git_repo):
     # type: (repo.Repo) -> head.Head
-    remote_master = git_repo.heads.master.tracking_branch()
-    if not remote_master or not remote_master.is_valid():
-        raise GitUtilsException("Unable to locate remote branch origin/master")
-    return remote_master
+    remote_main = git_repo.heads.main.tracking_branch()
+    if not remote_main or not remote_main.is_valid():
+        raise GitUtilsException("Unable to locate remote branch origin/main")
+    return remote_main
 
 
 def _modified_in_branch(git_repo, other_ref):
@@ -53,8 +53,8 @@ def changed_python_files_in_tree(root_path):
     # type: (str) -> typing.List[str]
 
     git_repo = repo.Repo(root_path)
-    remote_master = _remote_origin_master(git_repo)
-    modified = _modified_in_branch(git_repo, remote_master)
+    remote_main = _remote_origin_main(git_repo)
+    modified = _modified_in_branch(git_repo, remote_main)
     abs_modified = [os.path.join(git_repo.working_dir, x) for x in modified]
     return [mod for (mod, abs_mod) in zip(modified, abs_modified)
             if os.path.exists(abs_mod) and os.path.isfile(abs_mod) and _file_is_python(abs_mod)]
