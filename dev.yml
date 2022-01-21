@@ -3,7 +3,7 @@ name: shopify-python
 type: python
 
 up:
-  - python: 3.6.5
+  - python: 3.9.7
   - python_develop
   - pip: [requirements.txt]
 
