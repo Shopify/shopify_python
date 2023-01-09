@@ -6,3 +6,4 @@ mock==2.0.0
 mypy==0.740  ; python_version >= "3.3"
 astroid<=2.0.4 ; python_version <= "3.0"
 astroid ; python_version >= "3.0"
+twine # for interacting/uploading to pypi
