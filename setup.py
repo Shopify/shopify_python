@@ -41,6 +41,7 @@ setuptools.setup(
         'GitPython>=3.1.30 ; python_version>="3.0"',
         'typing~=3.6.6 ; python_version<"3.5"',
         'autopep8~=1.4',
+        'six',
     ],
     extras_require={
         ':python_version>="3.0"': [
