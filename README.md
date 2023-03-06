@@ -11,6 +11,8 @@ Python repositories adhere to these standards.
 
 ## Python Style
 
+The first rule of Python Style is to be consistent. If the rules are unclear, look at the function, class, file, or project you are editing and do your best to follow what you see.
+
 Shopify follows the [Google Python Style Guide](http://google.github.io/styleguide/pyguide.html) with the following
 exceptions:
 - Line Length: The maximum line length is 120 columns.
