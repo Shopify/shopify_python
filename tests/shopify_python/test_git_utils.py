@@ -1,4 +1,5 @@
 import os
+import mock
 import py  # pylint: disable=unused-import
 import pytest
 import git  # pylint: disable=unused-import
@@ -327,3 +328,12 @@ def test_passing_linter(tmpdir):
 
     lint_results = [x for x in git_utils.pylint_files([str(tmpdir)], reports='n')]
     assert lint_results == []
+
+
+def test_linter_rejects_paths_that_look_like_options():
+    # type: () -> None
+    with mock.patch.object(git_utils.lint, 'Run') as pylint_run:
+        with pytest.raises(ValueError):
+            list(git_utils.pylint_files(['--example.py']))
+
+        pylint_run.assert_not_called()

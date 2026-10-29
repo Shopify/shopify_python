@@ -122,6 +122,11 @@ class _CustomPylintReporter(text.ColorizedTextReporter):
 
 def pylint_files(files, **kwargs):
     # type: (typing.List[str], **str) -> typing.Iterable[utils.Message]
+    # File paths must not be interpreted as Pylint options.
+    for path in files:
+        if path.startswith('-'):
+            raise ValueError("refusing to lint path that looks like a pylint option: {}".format(path))
+
     kwargs['reports'] = 'n'
     pylint_args = ["--{}={}".format(key, value) for key, value in kwargs.items()]
 
